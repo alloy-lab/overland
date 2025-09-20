@@ -1,0 +1,171 @@
+---
+description: Creating new Pages in the app
+globs: apps/web/**
+alwaysApply: false
+---
+
+Adding new pages to your React Router application involves understanding the routing structure and following some conventions. This guide walks you through creating new pages in both public and authenticated areas of the app.
+
+## Understanding the Router Structure
+
+The app uses React Router and organizes routes in a file-based structure. Routes can be grouped under different layouts, such as:
+
+- **Public layout**: Marketing or informational pages
+- **Auth layout**: Authentication pages (login, signup, etc.)
+- **User layout**: Pages available to logged-in users
+- **Admin layout**: Pages for administrative use
+
+## Route Configuration Format
+
+Routes are defined using helper functions for clarity:
+
+```ts
+route('path', 'component-path')
+layout('layout-component', [child-routes])
+index('index-component')
+```
+
+## Adding a New Page to the Public Section
+
+Example: creating a **Features** page.
+
+1. **Create a new component file**:
+
+```tsx
+// routes/marketing/features.tsx
+export default function FeaturesPage() {
+  return (
+    <div>
+      <h1>Features</h1>
+      <p>Highlight what makes your app special.</p>
+      <ul>
+        <li>Fast routing</li>
+        <li>Nested layouts</li>
+        <li>Type-safe configuration</li>
+      </ul>
+    </div>
+  );
+}
+```
+
+2. **Update the routes configuration**:
+
+```ts
+const marketingLayout = layout('routes/marketing/layout.tsx', [
+  index('routes/marketing/index.tsx'),
+  route('features', 'routes/marketing/features.tsx'), // New route
+]);
+```
+
+3. **Update navigation** if you have a shared navigation component:
+
+```ts
+const links = {
+  Features: {
+    label: 'Features',
+    path: '/features',
+  },
+};
+```
+
+## Adding a Page to the Authenticated Area
+
+Example: creating a **Reports** page for signed-in users.
+
+1. **Create the component file**:
+
+```tsx
+// routes/user/reports.tsx
+export default function UserReportsPage() {
+  return (
+    <div>
+      <h1>Reports</h1>
+      <p>View statistics and activity for your account.</p>
+    </div>
+  );
+}
+```
+
+2. **Update the routes configuration**:
+
+```ts
+const userLayout = layout('routes/user/layout.tsx', [
+  route('reports', 'routes/user/reports.tsx'), // New route
+]);
+```
+
+3. **Update navigation config** if needed:
+
+```ts
+{
+  label: 'Reports',
+  path: '/user/reports',
+  end: true,
+}
+```
+
+## Creating Nested Routes
+
+For more complex areas, you can nest routes under their own layout.
+
+1. **Create a layout component**:
+
+```tsx
+// routes/user/reports/layout.tsx
+import { Outlet, Link } from 'react-router';
+
+export default function ReportsLayout() {
+  return (
+    <div>
+      <nav>
+        <Link to="/user/reports">Overview</Link>
+        <Link to="/user/reports/activity">Activity</Link>
+        <Link to="/user/reports/usage">Usage</Link>
+      </nav>
+      <Outlet />
+    </div>
+  );
+}
+```
+
+2. **Create child route components**:
+
+```tsx
+// routes/user/reports/activity.tsx
+export default function ActivityReport() {
+  return <div>Activity report content here</div>;
+}
+```
+
+3. **Update the routes configuration**:
+
+```ts
+const reportsLayout = layout('routes/user/reports/layout.tsx', [
+  index('routes/user/reports/index.tsx'),
+  route('activity', 'routes/user/reports/activity.tsx'),
+  route('usage', 'routes/user/reports/usage.tsx'),
+]);
+
+const userLayout = layout('routes/user/layout.tsx', [
+  reportsLayout, // Nested layout
+]);
+```
+
+## Best Practices
+
+1. **Route Organization**
+   - Group related routes under shared layouts
+   - Use descriptive paths and component names
+
+2. **UI Consistency**
+   - Reuse existing UI components across pages
+   - Keep layouts clean and predictable
+
+3. **Authentication**
+   - Protect private routes with loaders, guards, or wrappers
+   - Clearly separate public and authenticated layouts
+
+4. **Type Safety**
+   - Use TypeScript definitions for route components when possible
+
+By following these conventions, you can seamlessly add new pages to a React Router app while keeping structure and behavior consistent.

@@ -1,0 +1,28 @@
+{
+  "recommendations": [
+    // Core Development
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+
+    // Frontend/UI
+    "bradlc.vscode-tailwindcss",
+
+    // Configuration Files
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+
+    // DevOps
+    "ms-azuretools.vscode-docker",
+    "github.vscode-github-actions",
+
+    // Documentation
+    "yzhang.markdown-all-in-one",
+
+    // Environment
+    "mikestead.dotenv",
+
+    // Developer Experience
+    "christian-kohler.path-intellisense"
+  ]
+}

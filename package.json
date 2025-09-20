@@ -1,0 +1,58 @@
+{
+  "name": "overland-stack",
+  "version": "1.0.0",
+  "description": "Production-ready template pairing React Router SSR with Payload CMS",
+  "private": true,
+  "license": "MIT",
+  "author": "Overland Stack",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@10.17.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --recursive build",
+    "start": "pnpm run --parallel start",
+    "clean": "pnpm run --recursive clean",
+    "typecheck": "pnpm run --recursive typecheck",
+    "lint": "pnpm run --recursive lint",
+    "test": "pnpm run --recursive test",
+    "cms:dev": "pnpm --filter cms dev",
+    "web:dev": "pnpm --filter web dev",
+    "cms:build": "pnpm --filter cms build",
+    "web:build": "pnpm --filter web build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "typescript": "5.7.3"
+  },
+  "pnpm": {
+    "catalog": {
+      "@types/react": "19.1.8",
+      "@types/react-dom": "19.1.6",
+      "@types/node": "^22.5.4",
+      "@types/express": "^4.17.21",
+      "@types/cors": "^2.8.17",
+      "express": "^4.18.2",
+      "cors": "^2.8.5",
+      "cross-env": "^7.0.3",
+      "dotenv": "^16.3.1",
+      "react": "19.1.0",
+      "react-dom": "19.1.0",
+      "typescript": "5.7.3",
+      "tailwindcss": "^4.1.4",
+      "vite-tsconfig-paths": "5.1.4"
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "sharp"
+    ]
+  }
+}

@@ -1,0 +1,79 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17-alpine
+    container_name: overland-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: overland
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Payload CMS (Development)
+  cms:
+    build:
+      context: .
+      dockerfile: apps/cms/Dockerfile
+      target: base
+    container_name: overland-cms-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URI: postgresql://postgres:password@postgres:5432/overland
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:-your-secret-key-here}
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
+      PAYLOAD_PUBLIC_CMS_URL: ${PAYLOAD_PUBLIC_CMS_URL:-http://localhost:3001/admin}
+      CMS_PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./apps/cms:/app/apps/cms
+      - cms_uploads_dev:/app/apps/cms/uploads
+      - /app/node_modules
+    command: pnpm dev --filter=cms
+
+  # Web Application (Development)
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      target: base
+    container_name: overland-web-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      WEB_PORT: 3000
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
+    ports:
+      - "3000:3000"
+    depends_on:
+      cms:
+        condition: service_healthy
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/node_modules
+    command: pnpm dev --filter=web
+
+volumes:
+  postgres_data_dev:
+    driver: local
+  cms_uploads_dev:
+    driver: local
+
+networks:
+  default:
+    name: overland-network-dev

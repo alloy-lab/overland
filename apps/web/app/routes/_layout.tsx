@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import type { SiteSettings } from "~/lib/payloadClient";
-import { payloadClient } from "~/lib/payloadClient";
 
 export default function Layout() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);

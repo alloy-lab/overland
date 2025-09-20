@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import type { MetaFunction } from "react-router";
-import type { Book, Post, SiteSettings } from "~/lib/payloadClient";
+import type { Post, SiteSettings } from "~/lib/payloadClient";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,178 +13,75 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [books, setBooks] = useState<Book[]>([]);
-  const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [postsRes, booksRes, siteRes] = await Promise.all([
-          fetch("/api/posts?limit=3&status=published"),
-          fetch("/api/books?limit=3&status=published"),
-          fetch("/api/site"),
-        ]);
-
-        const [postsData, booksData, siteData] = await Promise.all([
-          postsRes.json(),
-          booksRes.json(),
-          siteRes.json(),
-        ]);
-
-        setPosts(postsData.docs || []);
-        setBooks(booksData.docs || []);
-        setSiteSettings(siteData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
+  // For now, use default data since CMS collections don't exist yet
+  const posts: Post[] = [];
+  const siteSettings: SiteSettings = {
+    title: "Overland",
+    description: "A modern, full-stack web application built with React Router SSR and Payload CMS"
+  };
 
   return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-          Welcome to {siteSettings?.title || "Overland Stack"}
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+      {/* Logo */}
+      <div className="mb-8">
+        <h1 className="text-6xl font-bold text-gray-900 mb-2">
+          <span className="text-gray-900">OVERLAND</span>
+          <span className="text-gray-600 text-4xl">.stack</span>
         </h1>
-        <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-          {siteSettings?.description ||
-            "A modern web application built with React Router SSR and Payload CMS"}
+      </div>
+
+      {/* Instructions */}
+      <div className="mb-8 max-w-2xl">
+        <p className="text-lg text-gray-600 mb-4">
+          Get started by exploring our{" "}
+          <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">/posts</code>{" "}
+          section.
+        </p>
+        <p className="text-lg text-gray-600">
+          Save and see your changes instantly.
         </p>
       </div>
 
-      {/* Recent Posts */}
-      {posts.length > 0 && (
-        <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Recent Posts</h2>
-            <a
-              href="/posts"
-              className="text-blue-600 hover:text-blue-500 font-medium"
-            >
-              View all posts →
-            </a>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <article
-                key={post.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                {post.featuredImage && (
-                  <img
-                    src={post.featuredImage.url}
-                    alt={post.featuredImage.alt || post.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <time dateTime={post.publishedDate}>
-                      {new Date(post.publishedDate).toLocaleDateString()}
-                    </time>
-                    <span className="mx-2">•</span>
-                    <span>{post.author.name}</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    <a
-                      href={`/posts/${post.slug}`}
-                      className="hover:text-blue-600"
-                    >
-                      {post.title}
-                    </a>
-                  </h3>
-                  {post.excerpt && (
-                    <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
-                  )}
-                  {post.tags && post.tags.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {post.tags.map((tag) => (
-                        <span
-                          key={tag.id}
-                          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                        >
-                          {tag.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Action Buttons */}
+      <div className="flex gap-4 mb-12">
+        <a
+          href="/posts"
+          className="inline-flex items-center px-6 py-3 bg-gray-900 text-white rounded-lg border border-gray-900 hover:bg-gray-800 transition-colors"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+          Explore Posts
+        </a>
+        <a
+          href="#"
+          className="inline-flex items-center px-6 py-3 bg-white text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+        >
+          Read our docs
+        </a>
+      </div>
 
-      {/* Recent Books */}
-      {books.length > 0 && (
-        <section>
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Recent Books</h2>
-            <a
-              href="/books"
-              className="text-blue-600 hover:text-blue-500 font-medium"
-            >
-              View all books →
-            </a>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {books.map((book) => (
-              <article
-                key={book.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                {book.coverImage && (
-                  <img
-                    src={book.coverImage.url}
-                    alt={book.coverImage.alt || book.title}
-                    className="w-full h-64 object-cover"
-                  />
-                )}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    <a
-                      href={`/books/${book.slug}`}
-                      className="hover:text-blue-600"
-                    >
-                      {book.title}
-                    </a>
-                  </h3>
-                  <p className="text-gray-600 mb-2">by {book.author}</p>
-                  {book.publishedDate && (
-                    <p className="text-sm text-gray-500">
-                      Published{" "}
-                      {new Date(book.publishedDate).toLocaleDateString()}
-                    </p>
-                  )}
-                  {book.chapters && book.chapters.length > 0 && (
-                    <p className="text-sm text-gray-500 mt-2">
-                      {book.chapters.length} chapter
-                      {book.chapters.length !== 1 ? "s" : ""}
-                    </p>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+      {/* Navigation Links */}
+      <div className="flex gap-8 text-sm">
+        <a href="/posts" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Learn
+        </a>
+        <a href="#" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          Examples
+        </a>
+        <a href="#" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9" />
+          </svg>
+          Go to overland.dev →
+        </a>
+      </div>
     </div>
   );
 }
-
-

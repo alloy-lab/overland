@@ -1,5 +1,5 @@
 {
-  "name": "@overland/ui",
+  "name": "@acme/ui",
   "version": "1.0.0",
   "description": "Shared UI components for Overland Stack",
   "private": true,

@@ -4,19 +4,24 @@ services:
     image: postgres:17-alpine
     container_name: overland-postgres
     restart: unless-stopped
+    profiles:
+      - production
+      - database
     environment:
       POSTGRES_DB: overland
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    # No host ports for Coolify - internal communication only
+    expose:
+      - "5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d overland"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # Payload CMS
   cms:
@@ -25,25 +30,30 @@ services:
       dockerfile: apps/cms/Dockerfile
     container_name: overland-cms
     restart: unless-stopped
+    profiles:
+      - production
+      - cms
     environment:
       NODE_ENV: production
-      DATABASE_URI: postgresql://postgres:password@postgres:5432/overland
-      PAYLOAD_SECRET: ${PAYLOAD_SECRET:-your-secret-key-here}
-      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
-      PAYLOAD_PUBLIC_CMS_URL: ${PAYLOAD_PUBLIC_CMS_URL:-http://localhost:3001/admin}
+      DATABASE_URI: postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/overland
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+      PAYLOAD_PUBLIC_CMS_URL: ${PAYLOAD_PUBLIC_CMS_URL}
       CMS_PORT: 3001
-    ports:
-      - "3001:3001"
+    # No host ports for Coolify - internal communication only
+    expose:
+      - "3001"
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
       - cms_uploads:/app/apps/cms/uploads
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/admin"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/admin || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 60s
 
   # Web Application
   web:
@@ -52,20 +62,25 @@ services:
       dockerfile: apps/web/Dockerfile
     container_name: overland-web
     restart: unless-stopped
+    profiles:
+      - production
+      - web
     environment:
       NODE_ENV: production
       WEB_PORT: 3000
-      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
-    ports:
-      - "3000:3000"
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+    # No host ports for Coolify - internal communication only
+    expose:
+      - "3000"
     depends_on:
       cms:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 60s
 
 volumes:
   postgres_data:

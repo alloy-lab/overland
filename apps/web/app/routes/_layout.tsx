@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import type { SiteSettings } from "~/lib/payloadClient";
+import { payloadClient } from "~/lib/payloadClient";
 
 export default function Layout() {
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
 
   useEffect(() => {
-    fetch("/api/site")
-      .then((res) => res.json())
-      .then(setSiteSettings)
-      .catch(console.error);
+    // For now, use default data since CMS collections don't exist yet
+    setSiteSettings({
+      title: "Overland Stack",
+      description: "A modern web application built with React Router SSR and Payload CMS"
+    });
   }, []);
 
   return (
@@ -41,12 +43,6 @@ export default function Layout() {
                 className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Posts
-              </a>
-              <a
-                href="/books"
-                className="text-gray-500 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Books
               </a>
             </nav>
           </div>

@@ -1,24 +1,27 @@
-version: "3.8"
-
 services:
-  # PostgreSQL Database
+  # PostgreSQL Database (Development)
   postgres:
     image: postgres:17-alpine
     container_name: overland-postgres-dev
     restart: unless-stopped
+    profiles:
+      - development
+      - database
     environment:
       POSTGRES_DB: overland
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
+    # Host ports for development access
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d overland"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # Payload CMS (Development)
   cms:
@@ -28,6 +31,9 @@ services:
       target: base
     container_name: overland-cms-dev
     restart: unless-stopped
+    profiles:
+      - development
+      - cms
     environment:
       NODE_ENV: development
       DATABASE_URI: postgresql://postgres:password@postgres:5432/overland
@@ -35,6 +41,7 @@ services:
       PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
       PAYLOAD_PUBLIC_CMS_URL: ${PAYLOAD_PUBLIC_CMS_URL:-http://localhost:3001/admin}
       CMS_PORT: 3001
+    # Host ports for development access
     ports:
       - "3001:3001"
     depends_on:
@@ -44,29 +51,14 @@ services:
       - ./apps/cms:/app/apps/cms
       - cms_uploads_dev:/app/apps/cms/uploads
       - /app/node_modules
-    command: pnpm dev --filter=cms
+    command: pnpm --filter cms dev
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/admin || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
-  # Web Application (Development)
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-      target: base
-    container_name: overland-web-dev
-    restart: unless-stopped
-    environment:
-      NODE_ENV: development
-      WEB_PORT: 3000
-      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
-    ports:
-      - "3000:3000"
-    depends_on:
-      cms:
-        condition: service_healthy
-    volumes:
-      - ./apps/web:/app/apps/web
-      - /app/node_modules
-    command: pnpm dev --filter=web
 
 volumes:
   postgres_data_dev:

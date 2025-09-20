@@ -3,13 +3,26 @@ FROM node:18-alpine AS base
 RUN npm install -g pnpm
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+# Copy workspace configuration
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy all package.json files for proper dependency resolution
 COPY apps/cms/package.json ./apps/cms/
+COPY apps/web/package.json ./apps/web/
+COPY packages/ui/package.json ./packages/ui/
+
+# Install all dependencies
 RUN pnpm install --frozen-lockfile
 
+# Copy source code
 COPY apps/cms ./apps/cms
-COPY turbo.json ./
-RUN pnpm build --filter=cms
+COPY packages/ui ./packages/ui
+
+# Build UI package first
+RUN pnpm --filter @acme/ui build
+
+# Build CMS
+RUN pnpm --filter cms build
 
 # Production stage
 FROM node:18-alpine AS production
@@ -17,12 +30,21 @@ FROM node:18-alpine AS production
 RUN npm install -g pnpm
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+# Copy workspace configuration
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy all package.json files
 COPY apps/cms/package.json ./apps/cms/
+COPY apps/web/package.json ./apps/web/
+COPY packages/ui/package.json ./packages/ui/
+
+# Install production dependencies only
 RUN pnpm install --frozen-lockfile --prod
 
-COPY --from=base /app/apps/cms/dist ./apps/cms/dist
-COPY --from=base /app/apps/cms/node_modules/.cache ./apps/cms/node_modules/.cache
+# Copy built application from base stage
+COPY --from=base /app/apps/cms/.next ./apps/cms/.next
+COPY --from=base /app/apps/cms/public ./apps/cms/public
+COPY --from=base /app/apps/cms/package.json ./apps/cms/
 
 # Create uploads directory for file storage
 RUN mkdir -p /app/apps/cms/uploads
@@ -30,4 +52,4 @@ RUN mkdir -p /app/apps/cms/uploads
 EXPOSE 3001
 ENV NODE_ENV=production
 ENV PORT=3001
-CMD ["node", "apps/cms/dist/server.js"]
+CMD ["pnpm", "start", "--filter=cms"]

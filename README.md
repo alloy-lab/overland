@@ -12,7 +12,7 @@ A production-ready template that pairs React Router SSR (Vite) with Payload CMS 
 - **Data Flow**: Web app reads from Payload REST API with draft support
 - **Images**: Local disk storage (easily extensible to S3/R2)
 - **Deployment**: Docker containers optimized for Coolify on Hetzner
-- **Monorepo**: pnpm workspaces with optional Turbo configuration
+- **Monorepo**: pnpm workspaces
 - **TypeScript**: Full TypeScript support across all packages
 
 ## 📁 Project Structure
@@ -47,14 +47,14 @@ This project uses pnpm workspaces for monorepo management:
 
 - **Root workspace**: Contains shared dependencies and scripts
 - **Apps**: Independent applications (cms, web)
-- **Packages**: Shared libraries (@overland/ui)
+- **Packages**: Shared libraries (@acme/ui)
 - **Workspace dependencies**: Use `workspace:*` for internal packages
 
 ## 🛠️ Tech Stack
 
 - **Language**: TypeScript
 - **Package Manager**: pnpm
-- **Monorepo**: pnpm workspaces + Turbo (optional)
+- **Monorepo**: pnpm workspaces
 - **Frontend**: React 19, React Router v7, Vite SSR, Express
 - **CMS**: Payload CMS v3, PostgreSQL 17
 - **Deployment**: Docker, Docker Compose, Coolify-ready
@@ -229,7 +229,6 @@ The web application uses Tailwind CSS classes. You can:
 - **Caching**: Implement Redis for API caching
 - **CDN**: Use a CDN for static assets
 - **Database**: Optimize queries and add indexes
-- **Build**: Use Turbo for faster builds
 
 ### Monitoring
 

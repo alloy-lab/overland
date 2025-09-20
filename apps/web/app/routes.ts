@@ -16,15 +16,7 @@ export default [
       {
         path: "posts/:slug",
         file: "routes/posts.$slug.tsx",
-      },
-      {
-        path: "books",
-        file: "routes/books._index.tsx",
-      },
-      {
-        path: "books/:bookSlug/:chapterSlug",
-        file: "routes/books.$bookSlug.$chapterSlug.tsx",
-      },
+      }
     ],
   },
 ] satisfies RouteConfig;

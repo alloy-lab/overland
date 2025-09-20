@@ -1,7 +1,6 @@
 import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
-import React from 'react'
 import { fileURLToPath } from 'url'
 
 import config from '@/payload.config'
@@ -27,7 +26,7 @@ export default async function HomePage() {
             width={65}
           />
         </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
+        {!user && <h1>Welcome to your new Overland project.</h1>}
         {user && <h1>Welcome back, {user.email}</h1>}
         <div className="links">
           <a

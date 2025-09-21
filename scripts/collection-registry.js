@@ -11,6 +11,7 @@
  * - Validation rules
  */
 
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -358,16 +359,16 @@ export type ${displayName}Update = Partial<${displayName}Input>;
 export * from './types/base';
 
 // Collection types
-${collections
-  .map(collection => `export * from './types/${collection.slug}';`)
-  .join('\n')}
+export * from './types/media';
+export * from './types/pages';
 export * from './types/site-settings';
+export * from './types/users';
 
 // Re-export commonly used types for convenience
 export type { Media } from './types/media';
 export type { Pages } from './types/pages';
-export type { Email } from './types/users';
 export type { SiteSettings } from './types/site-settings';
+export type { Email } from './types/users';
 `;
 
     fs.writeFileSync(WEB_TYPES_PATH, indexContent);
@@ -585,8 +586,8 @@ export const siteSettingsClient = new SiteSettingsClient();
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
+import type { ${displayName}, PayloadResponse, QueryOptions } from '../types';
 import { BasePayloadClient } from './base';
-import type { PayloadResponse, QueryOptions, ${displayName} } from '../types';
 
 export class ${displayName}Client extends BasePayloadClient {
 ${methods}
@@ -623,7 +624,7 @@ export const ${slug}Client = new ${displayName}Client();
    */
   async get${this.singularize(displayName)}(slug: string, draft = false): Promise<${displayName}> {
     const params = new URLSearchParams();
-    if (draft) params.set("draft", "true");
+    if (draft) params.set('draft', 'true');
 
     const response = await this.fetch<PayloadResponse<${displayName}>>(
       \`/${slug}?where[slug][equals]=\${slug}&\${params.toString()}\`
@@ -642,11 +643,13 @@ export const ${slug}Client = new ${displayName}Client();
       methods.push(`  /**
    * Get only published ${pluralName.toLowerCase()}
    */
-  async getPublished${pluralName}(options?: Omit<QueryOptions, 'where'>): Promise<${displayName}[]> {
+  async getPublished${pluralName}(
+    options?: Omit<QueryOptions, 'where'>
+  ): Promise<${displayName}[]> {
     const response = await this.get${pluralName}({
       ...options,
       where: {
-        status: { equals: "published" },
+        status: { equals: 'published' },
       },
     });
     return response.docs;
@@ -662,9 +665,9 @@ export const ${slug}Client = new ${displayName}Client();
     const response = await this.get${pluralName}({
       where: {
         showInNavigation: { equals: true },
-        status: { equals: "published" },
+        status: { equals: 'published' },
       },
-      sort: "navigationOrder",
+      sort: 'navigationOrder',
     });
     return response.docs;
   }`);
@@ -769,15 +772,14 @@ export type { PayloadResponse, QueryOptions } from '../types';
  */
 
 import {
-${clientExports}
+  mediaClient,
+  pagesClient,
   siteSettingsClient,
+  usersClient,
 } from './clients';
 
 // Re-export all clients for convenience
-export {
-${clientExports}
-  siteSettingsClient,
-};
+export { mediaClient, pagesClient, siteSettingsClient, usersClient };
 
 // Legacy compatibility - main client object
 export const payloadClient = {
@@ -789,9 +791,11 @@ ${legacyMethods}
 
 // Re-export types
 export type {
+  Email,
+  Media,
+  Pages,
   PayloadResponse,
   QueryOptions,
-${collections.map(c => `  ${c.displayName},`).join('\n')}
   SiteSettings,
 } from './types';
 `;
@@ -828,7 +832,7 @@ ${collections.map(c => `  ${c.displayName},`).join('\n')}
       methods.push(`
   async get${this.singularize(displayName)}(slug: string, draft = false): Promise<${displayName}> {
     const params = new URLSearchParams();
-    if (draft) params.set("draft", "true");
+    if (draft) params.set('draft', 'true');
 
     const response = await this.fetch<PayloadResponse<${displayName}>>(
       \`/${slug}?where[slug][equals]=\${slug}&\${params.toString()}\`
@@ -843,11 +847,13 @@ ${collections.map(c => `  ${c.displayName},`).join('\n')}
     // Get published items
     if (hasStatus) {
       methods.push(`
-  async getPublished${pluralName}(options?: Omit<QueryOptions, 'where'>): Promise<${displayName}[]> {
+  async getPublished${pluralName}(
+    options?: Omit<QueryOptions, 'where'>
+  ): Promise<${displayName}[]> {
     const response = await this.get${pluralName}({
       ...options,
       where: {
-        status: { equals: "published" },
+        status: { equals: 'published' },
       },
     });
     return response.docs;
@@ -861,9 +867,9 @@ ${collections.map(c => `  ${c.displayName},`).join('\n')}
     const response = await this.get${pluralName}({
       where: {
         showInNavigation: { equals: true },
-        status: { equals: "published" },
+        status: { equals: 'published' },
       },
-      sort: "navigationOrder",
+      sort: 'navigationOrder',
     });
     return response.docs;
   }`);
@@ -1098,6 +1104,30 @@ export default function ${displayName}Detail({ loaderData }: { loaderData: { ${s
   }
 
   /**
+   * Format generated files with prettier
+   */
+  formatGeneratedFiles() {
+    console.log('🎨 Formatting generated files...');
+
+    try {
+      // Run prettier on the generated files
+      execSync(
+        'pnpm prettier --write apps/web/app/lib/clients/ apps/web/app/lib/types/ apps/web/app/routes/pages.*.tsx',
+        {
+          cwd: path.join(__dirname, '..'),
+          stdio: 'inherit',
+        }
+      );
+      console.log('✅ Generated files formatted successfully');
+    } catch (error) {
+      console.warn(
+        '⚠️  Warning: Could not format generated files:',
+        error.message
+      );
+    }
+  }
+
+  /**
    * Main generation process
    */
   async generate() {
@@ -1108,6 +1138,7 @@ export default function ${displayName}Detail({ loaderData }: { loaderData: { ${s
     this.generateWebTypes();
     this.generateClientMethods();
     this.generateRouteFiles();
+    this.formatGeneratedFiles();
     this.generateReport();
 
     console.log('\n🎉 Collection Registry generation complete!');

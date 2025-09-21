@@ -5,8 +5,8 @@
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
+import type { Email, PayloadResponse, QueryOptions } from '../types';
 import { BasePayloadClient } from './base';
-import type { PayloadResponse, QueryOptions, Email } from '../types';
 
 export class EmailClient extends BasePayloadClient {
   /**

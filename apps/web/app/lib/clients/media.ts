@@ -5,8 +5,8 @@
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
+import type { Media, PayloadResponse, QueryOptions } from '../types';
 import { BasePayloadClient } from './base';
-import type { PayloadResponse, QueryOptions, Media } from '../types';
 
 export class MediaClient extends BasePayloadClient {
   /**

@@ -8,8 +8,7 @@
     "app/lib/security.ts",
     "app/lib/envValidation.ts",
     "app/lib/apiSecurity.ts",
-    "app/lib/performance.ts",
-    "app/lib/imageOptimization.ts"
+    "app/lib/performance.ts"
   ],
   "compilerOptions": {
     "composite": true,

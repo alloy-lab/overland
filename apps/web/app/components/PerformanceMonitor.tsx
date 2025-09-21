@@ -1,93 +1,68 @@
+import { Analytics } from '@vercel/analytics/react';
 import { useEffect, useState } from 'react';
-
-interface PerformanceMetrics {
-  requestId: string;
-  method: string;
-  url: string;
-  duration?: number;
-  statusCode?: number;
-  memoryUsage?: {
-    rss: number;
-    heapUsed: number;
-    heapTotal: number;
-    external: number;
-  };
-}
+import { usePerformanceMonitoring } from '~/lib/performance';
 
 interface PerformanceMonitorProps {
   enabled?: boolean;
-  maxEntries?: number;
-  showMemory?: boolean;
-  showSlowRequests?: boolean;
-  slowRequestThreshold?: number;
 }
 
 export function PerformanceMonitor({
   enabled = process.env.NODE_ENV === 'development',
-  maxEntries = 50,
-  showMemory = true,
-  showSlowRequests = true,
-  slowRequestThreshold = 1000,
 }: PerformanceMonitorProps) {
-  const [metrics, setMetrics] = useState<PerformanceMetrics[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [metrics, setMetrics] = useState<any[]>([]);
+  const analytics = usePerformanceMonitoring();
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !analytics) return;
 
-    // Listen for performance metrics from the server
-    const eventSource = new EventSource('/api/performance/metrics');
-
-    eventSource.onmessage = event => {
-      try {
-        const newMetric: PerformanceMetrics = JSON.parse(event.data);
-        setMetrics(prev => {
-          const updated = [newMetric, ...prev].slice(0, maxEntries);
-          return updated;
-        });
-      } catch (error) {
-        console.error('Failed to parse performance metric:', error);
-      }
+    // Listen for custom performance events
+    const handlePerformanceEvent = (event: CustomEvent) => {
+      setMetrics(prev => [event.detail, ...prev].slice(0, 10));
     };
 
-    eventSource.onerror = error => {
-      console.error('Performance metrics stream error:', error);
-    };
+    window.addEventListener(
+      'performance-metric',
+      handlePerformanceEvent as EventListener
+    );
 
     return () => {
-      eventSource.close();
+      window.removeEventListener(
+        'performance-metric',
+        handlePerformanceEvent as EventListener
+      );
     };
-  }, [enabled, maxEntries]);
+  }, [enabled, analytics]);
 
   if (!enabled) return null;
 
-  const slowRequests = metrics.filter(
-    m => m.duration && m.duration > slowRequestThreshold
-  );
-  const averageResponseTime =
-    metrics.length > 0
-      ? metrics.reduce((sum, m) => sum + (m.duration || 0), 0) / metrics.length
-      : 0;
-
-  const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  const formatValue = (value: number, name: string): string => {
+    switch (name) {
+      case 'CLS':
+        return value.toFixed(3);
+      case 'FID':
+      case 'FCP':
+      case 'LCP':
+      case 'TTFB':
+        return `${Math.round(value)}ms`;
+      default:
+        return value.toString();
+    }
   };
 
-  const formatDuration = (ms: number): string => {
-    if (ms < 1000) return `${ms.toFixed(0)}ms`;
-    return `${(ms / 1000).toFixed(2)}s`;
-  };
+  const getStatusColor = (name: string, value: number): string => {
+    const budgets = {
+      CLS: 0.1,
+      FID: 100,
+      FCP: 1800,
+      LCP: 2500,
+      TTFB: 800,
+    };
 
-  const getStatusColor = (statusCode?: number): string => {
-    if (!statusCode) return 'text-gray-500';
-    if (statusCode >= 200 && statusCode < 300) return 'text-green-600';
-    if (statusCode >= 300 && statusCode < 400) return 'text-blue-600';
-    if (statusCode >= 400 && statusCode < 500) return 'text-yellow-600';
-    return 'text-red-600';
+    const budget = budgets[name as keyof typeof budgets];
+    if (!budget) return 'text-gray-600';
+
+    return value > budget ? 'text-red-600' : 'text-green-600';
   };
 
   return (
@@ -139,131 +114,54 @@ export function PerformanceMonitor({
           </div>
 
           <div className='p-4 space-y-4'>
-            {/* Summary Stats */}
-            <div className='grid grid-cols-2 gap-4 text-sm'>
-              <div>
-                <div className='text-gray-500'>Total Requests</div>
-                <div className='font-semibold'>{metrics.length}</div>
-              </div>
-              <div>
-                <div className='text-gray-500'>Avg Response</div>
-                <div className='font-semibold'>
-                  {formatDuration(averageResponseTime)}
-                </div>
-              </div>
-              {showSlowRequests && (
-                <div>
-                  <div className='text-gray-500'>Slow Requests</div>
-                  <div className='font-semibold text-red-600'>
-                    {slowRequests.length}
-                  </div>
-                </div>
-              )}
-              {showMemory && metrics[0]?.memoryUsage && (
-                <div>
-                  <div className='text-gray-500'>Memory</div>
-                  <div className='font-semibold'>
-                    {formatBytes(metrics[0].memoryUsage.heapUsed)}
-                  </div>
-                </div>
-              )}
+            {/* Web Vitals Info */}
+            <div className='text-sm text-gray-600'>
+              <p>Web Vitals are automatically tracked by Vercel Analytics.</p>
+              <p>Check your Vercel dashboard for detailed metrics.</p>
             </div>
 
-            {/* Recent Requests */}
-            <div>
-              <h4 className='text-sm font-medium text-gray-700 mb-2'>
-                Recent Requests
-              </h4>
-              <div className='space-y-2 max-h-48 overflow-y-auto'>
-                {metrics.slice(0, 10).map((metric, index) => (
-                  <div
-                    key={metric.requestId}
-                    className='text-xs border-l-2 border-gray-200 pl-2'
-                  >
-                    <div className='flex justify-between items-start'>
-                      <div className='flex-1 min-w-0'>
-                        <div className='font-mono text-gray-600 truncate'>
-                          {metric.method} {metric.url}
-                        </div>
-                        {metric.duration && (
-                          <div className='text-gray-500'>
-                            {formatDuration(metric.duration)}
-                          </div>
-                        )}
-                      </div>
-                      {metric.statusCode && (
-                        <span
-                          className={`ml-2 font-semibold ${getStatusColor(metric.statusCode)}`}
-                        >
-                          {metric.statusCode}
+            {/* Recent Metrics */}
+            {metrics.length > 0 && (
+              <div>
+                <h4 className='text-sm font-medium text-gray-700 mb-2'>
+                  Recent Metrics
+                </h4>
+                <div className='space-y-2 max-h-48 overflow-y-auto'>
+                  {metrics.map((metric, index) => (
+                    <div
+                      key={index}
+                      className='text-xs border-l-2 border-gray-200 pl-2'
+                    >
+                      <div className='flex justify-between items-center'>
+                        <span className='font-mono text-gray-600'>
+                          {metric.name}
                         </span>
-                      )}
-                    </div>
-                    {showMemory && metric.memoryUsage && (
-                      <div className='text-gray-400 mt-1'>
-                        Memory: {formatBytes(metric.memoryUsage.heapUsed)}
+                        <span
+                          className={`font-semibold ${getStatusColor(metric.name, metric.value)}`}
+                        >
+                          {formatValue(metric.value, metric.name)}
+                        </span>
                       </div>
-                    )}
-                  </div>
-                ))}
-                {metrics.length === 0 && (
-                  <div className='text-gray-500 text-center py-4'>
-                    No requests yet
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
+
+            {metrics.length === 0 && (
+              <div className='text-gray-500 text-center py-4'>
+                <p>No custom metrics yet</p>
+                <p className='text-xs mt-1'>
+                  Web Vitals are tracked automatically
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
+
+      {/* Vercel Analytics */}
+      <Analytics />
     </>
   );
 }
-
-// Performance metrics hook
-export const usePerformanceMetrics = () => {
-  const [metrics, setMetrics] = useState<PerformanceMetrics[]>([]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    const eventSource = new EventSource('/api/performance/metrics');
-
-    eventSource.onmessage = event => {
-      try {
-        const newMetric: PerformanceMetrics = JSON.parse(event.data);
-        setMetrics(prev => [newMetric, ...prev].slice(0, 100));
-      } catch (error) {
-        console.error('Failed to parse performance metric:', error);
-      }
-    };
-
-    return () => eventSource.close();
-  }, []);
-
-  return metrics;
-};
-
-// Performance budget hook
-export const usePerformanceBudget = () => {
-  const [violations, setViolations] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    const eventSource = new EventSource('/api/performance/budget-violations');
-
-    eventSource.onmessage = event => {
-      try {
-        const violation = JSON.parse(event.data);
-        setViolations(prev => [violation, ...prev].slice(0, 20));
-      } catch (error) {
-        console.error('Failed to parse budget violation:', error);
-      }
-    };
-
-    return () => eventSource.close();
-  }, []);
-
-  return violations;
-};

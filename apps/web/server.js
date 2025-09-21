@@ -4,12 +4,7 @@ import morgan from 'morgan';
 
 import { env } from './app/lib/envValidation.js';
 import { expressErrorHandler } from './app/lib/errorHandler.js';
-import {
-  imageOptimizationHandler,
-  imageOptimizationMiddleware,
-} from './app/lib/imageOptimization.js';
 import logger from './app/lib/logger.js';
-import { performanceMiddleware } from './app/lib/performance.js';
 import {
   apiSecurity,
   authSecurity,
@@ -33,12 +28,7 @@ app.disable('x-powered-by');
 app.use(compression());
 app.use(requestSizeLimit('10MB'));
 
-// Performance monitoring
-app.use(performanceMiddleware);
-
-// Image optimization
-app.use(imageOptimizationMiddleware);
-app.use(imageOptimizationHandler);
+// Performance monitoring is now handled by Vercel Analytics and Web Vitals
 
 // Apply security middleware based on environment
 if (env.ENABLE_CORS) {
@@ -52,7 +42,7 @@ app.use(staticSecurity);
 app.use(
   morgan('combined', {
     stream: {
-      write: message => logger.http(message.trim()),
+      write: message => logger.info(message.trim()),
     },
   })
 );

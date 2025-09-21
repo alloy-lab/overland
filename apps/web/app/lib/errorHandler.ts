@@ -1,14 +1,34 @@
-import logger from './logger';
+import * as Sentry from '@sentry/nextjs';
+import pino from 'pino';
 
-export interface AppError extends Error {
-  statusCode: number;
-  isOperational: boolean;
-}
+// Initialize Sentry
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  debug: process.env.NODE_ENV === 'development',
+});
 
-export class CustomError extends Error implements AppError {
-  public statusCode: number;
-  public isOperational: boolean;
-  public name: string;
+// Initialize Pino logger
+const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  transport:
+    process.env.NODE_ENV === 'development'
+      ? {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+          },
+        }
+      : undefined,
+});
+
+// Custom error classes
+export class CustomError extends Error {
+  public readonly statusCode: number;
+  public readonly isOperational: boolean;
 
   constructor(
     message: string,
@@ -25,7 +45,7 @@ export class CustomError extends Error implements AppError {
 }
 
 export class ValidationError extends CustomError {
-  constructor(message: string) {
+  constructor(message: string = 'Validation failed') {
     super(message, 400);
   }
 }
@@ -67,8 +87,8 @@ export class InternalServerError extends CustomError {
 }
 
 // Global error handler
-export function handleError(error: Error | AppError): AppError {
-  let appError: AppError;
+export function handleError(error: Error | CustomError): CustomError {
+  let appError: CustomError;
 
   if (error instanceof CustomError) {
     appError = error;
@@ -77,13 +97,19 @@ export function handleError(error: Error | AppError): AppError {
     appError = new InternalServerError(error.message);
   }
 
-  // Log the error
-  logger.error('Error occurred:', {
-    message: appError.message,
-    statusCode: appError.statusCode,
-    stack: appError.stack,
-    isOperational: appError.isOperational,
-  });
+  // Log the error with Pino
+  logger.error(
+    {
+      message: appError.message,
+      statusCode: appError.statusCode,
+      stack: appError.stack,
+      isOperational: appError.isOperational,
+    },
+    'Error occurred'
+  );
+
+  // Send to Sentry
+  Sentry.captureException(appError);
 
   return appError;
 }
@@ -93,15 +119,15 @@ export function asyncHandler<T extends any[], R>(
   fn: (...args: T) => Promise<R>
 ) {
   return (...args: T): Promise<R> => {
-    return Promise.resolve(fn(...args)).catch(error => {
+    return fn(...args).catch(error => {
       throw handleError(error);
     });
   };
 }
 
-// Express error handler middleware
+// Express error handler
 export function expressErrorHandler(
-  error: Error | AppError,
+  error: Error,
   req: any,
   res: any,
   next: any
@@ -109,28 +135,19 @@ export function expressErrorHandler(
   const appError = handleError(error);
 
   // Don't leak error details in production
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const message =
+    process.env.NODE_ENV === 'production'
+      ? 'Something went wrong'
+      : appError.message;
 
-  res.status(appError.statusCode ?? 500).json({
-    error: {
-      message: appError.message,
-      statusCode: appError.statusCode,
-      ...(isDevelopment && { stack: appError.stack }),
-    },
+  res.status(appError.statusCode).json({
+    error: message,
+    ...(process.env.NODE_ENV === 'development' && {
+      stack: appError.stack,
+      details: appError.message,
+    }),
   });
 }
 
-// React Router error handler
-export function reactRouterErrorHandler(error: Error | AppError) {
-  const appError = handleError(error);
-
-  // You can customize this based on your needs
-  // For example, redirect to error pages based on status code
-  if (appError.statusCode === 404) {
-    throw new Response(null, { status: 404 });
-  } else if (appError.statusCode >= 500) {
-    throw new Response(null, { status: 500 });
-  }
-
-  throw appError;
-}
+// Export logger for use throughout the app
+export { logger };

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import logger from '~/lib/logger';
 
 describe('Logger', () => {
@@ -11,7 +11,6 @@ describe('Logger', () => {
     expect(typeof logger.error).toBe('function');
     expect(typeof logger.warn).toBe('function');
     expect(typeof logger.info).toBe('function');
-    expect(typeof logger.http).toBe('function');
     expect(typeof logger.debug).toBe('function');
   });
 
@@ -21,7 +20,6 @@ describe('Logger', () => {
       logger.error('Test error message');
       logger.warn('Test warning message');
       logger.info('Test info message');
-      logger.http('GET /test 200 123ms');
       logger.debug('Debug information');
     }).not.toThrow();
   });

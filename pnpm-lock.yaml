@@ -118,8 +118,8 @@ catalogs:
       specifier: 1.54.1
       version: 1.54.1
     playwright-core:
-      specifier: 1.54.1
-      version: 1.54.1
+      specifier: 1.55.0
+      version: 1.55.0
     prettier:
       specifier: ^3.4.2
       version: 3.6.2
@@ -245,7 +245,7 @@ importers:
         version: 1.54.1
       playwright-core:
         specifier: 'catalog:'
-        version: 1.54.1
+        version: 1.55.0
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -4768,6 +4768,11 @@ packages:
 
   playwright-core@1.54.1:
     resolution: {integrity: sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright-core@1.55.0:
+    resolution: {integrity: sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11051,6 +11056,8 @@ snapshots:
       thread-stream: 3.1.0
 
   playwright-core@1.54.1: {}
+
+  playwright-core@1.55.0: {}
 
   playwright@1.54.1:
     dependencies:

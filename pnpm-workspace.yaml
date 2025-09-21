@@ -41,7 +41,7 @@ catalog:
   next: 15.4.4
   payload: 3.55.0
   playwright: 1.54.1
-  playwright-core: 1.54.1
+  playwright-core: 1.55.0
   prettier: ^3.4.2
   react: 19.1.0
   react-dom: 19.1.0

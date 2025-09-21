@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Production-ready template pairing React Router SSR with Payload CMS",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "author": "Overland Stack",
   "engines": {

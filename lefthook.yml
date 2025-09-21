@@ -36,6 +36,8 @@ skip_output:
   - 'build/**'
   - '.next/**'
   - 'coverage/**'
+  - 'test-results/**'
+  - 'playwright-report/**'
   - '*.log'
   - '*.lock'
   - '*.md'

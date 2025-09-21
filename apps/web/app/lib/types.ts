@@ -11,11 +11,11 @@ export * from './types/base';
 // Collection types
 export * from './types/media';
 export * from './types/pages';
-export * from './types/users';
 export * from './types/site-settings';
+export * from './types/users';
 
 // Re-export commonly used types for convenience
 export type { Media } from './types/media';
 export type { Pages } from './types/pages';
-export type { Email } from './types/users';
 export type { SiteSettings } from './types/site-settings';
+export type { Email } from './types/users';

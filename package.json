@@ -34,7 +34,13 @@
     "cms:dev": "pnpm --filter cms dev",
     "web:dev": "pnpm --filter web dev",
     "cms:build": "pnpm --filter cms build",
-    "web:build": "pnpm --filter web build"
+    "web:build": "pnpm --filter web build",
+    "setup": "node scripts/dev-cli.js setup",
+    "new:collection": "node scripts/dev-cli.js new-collection",
+    "config": "node scripts/dev-cli.js config",
+    "status": "node scripts/dev-cli.js status",
+    "env:generate": "node scripts/dev-cli.js env",
+    "docker:dev": "node scripts/dev-cli.js docker"
   },
   "devDependencies": {
     "@types/node": "catalog:",

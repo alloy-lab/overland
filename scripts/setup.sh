@@ -79,18 +79,27 @@ setup_environment() {
     print_status "Setting up environment..."
 
     if [ ! -f .env ]; then
-        if [ -f env.example ]; then
-            cp env.example .env
-            print_success "Created .env from env.example"
-            print_warning "Please update .env with your configuration:"
-            echo "  - Set PAYLOAD_SECRET to a secure random string"
-            echo "  - Configure database connection if needed"
-            echo "  - Update any other environment-specific settings"
-            echo ""
-            read -p "Press Enter to continue after updating .env..."
+        print_status "Generating environment configuration..."
+
+        # Use Node.js to generate a proper .env file with secure defaults
+        if command_exists node; then
+            node scripts/generate-env.js
+            print_success "Generated .env with secure defaults"
         else
-            print_error "env.example not found. Please create a .env file manually."
-            exit 1
+            # Fallback to copying example
+            if [ -f env.example ]; then
+                cp env.example .env
+                print_success "Created .env from env.example"
+                print_warning "Please update .env with your configuration:"
+                echo "  - Set PAYLOAD_SECRET to a secure random string"
+                echo "  - Configure database connection if needed"
+                echo "  - Update any other environment-specific settings"
+                echo ""
+                read -p "Press Enter to continue after updating .env..."
+            else
+                print_error "env.example not found. Please create a .env file manually."
+                exit 1
+            fi
         fi
     else
         print_success ".env file already exists"

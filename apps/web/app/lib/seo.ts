@@ -1,4 +1,5 @@
 import type { Pages, SiteSettings } from './types';
+import { generateStructuredData } from './structuredData';
 
 export interface SEOData {
   title: string;
@@ -7,12 +8,15 @@ export interface SEOData {
   image?: string;
   url?: string;
   type?: string;
+  structuredData?: string;
 }
 
 export function generateSEO(
   data: Pages | SiteSettings,
   siteSettings: SiteSettings,
-  type: 'page' | 'home' = 'home'
+  type: 'page' | 'home' = 'home',
+  baseUrl?: string,
+  breadcrumbs?: Array<{ name: string; url: string }>
 ): SEOData {
   const baseTitle = siteSettings.title;
   const baseDescription = siteSettings.description;
@@ -30,13 +34,29 @@ export function generateSEO(
     image = page.seo?.image?.url || page.featuredImage?.url;
   }
 
-  return {
+  const seoData: SEOData = {
     title,
     description,
     keywords,
     image,
+    url:
+      type === 'page' && 'slug' in data
+        ? `${baseUrl}/pages/${data.slug}`
+        : baseUrl,
     type: type === 'home' ? 'website' : 'article',
   };
+
+  // Add structured data if baseUrl is provided
+  if (baseUrl) {
+    seoData.structuredData = generateStructuredData({
+      baseUrl,
+      siteSettings,
+      page: type === 'page' ? (data as Pages) : undefined,
+      breadcrumbs,
+    });
+  }
+
+  return seoData;
 }
 
 export function generateMetaTags(seo: SEOData): string {

@@ -59,14 +59,21 @@ describe('SEO Utilities', () => {
     });
 
     it('should generate SEO data for page', () => {
-      const result = generateSEO(mockPage, mockSiteSettings, 'page');
+      const result = generateSEO(
+        mockPage,
+        mockSiteSettings,
+        'page',
+        'https://example.com'
+      );
 
       expect(result).toEqual({
         title: 'About Us - Overland Stack',
         description: 'Learn more about our company and mission',
         keywords: 'about, company, mission',
         image: 'https://example.com/about-image.jpg',
+        url: 'https://example.com/pages/about',
         type: 'article',
+        structuredData: expect.any(String),
       });
     });
 

@@ -5,6 +5,7 @@ export interface SEOData {
   image?: string;
   url?: string;
   type?: string;
+  structuredData?: string;
 }
 
 export interface SEOHeadProps {
@@ -32,6 +33,14 @@ export function SEOHead({ seo }: SEOHeadProps) {
       <meta name='twitter:title' content={seo.title} />
       <meta name='twitter:description' content={seo.description} />
       {seo.image && <meta name='twitter:image' content={seo.image} />}
+
+      {/* Structured Data */}
+      {seo.structuredData && (
+        <script
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{ __html: seo.structuredData }}
+        />
+      )}
     </>
   );
 }

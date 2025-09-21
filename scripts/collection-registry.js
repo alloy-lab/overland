@@ -1115,7 +1115,7 @@ export default function ${displayName}Detail({ loaderData }: { loaderData: { ${s
         'pnpm prettier --write apps/web/app/lib/clients/ apps/web/app/lib/types/ apps/web/app/routes/pages.*.tsx',
         {
           cwd: path.join(__dirname, '..'),
-          stdio: 'inherit',
+          stdio: 'pipe',
         }
       );
       console.log('✅ Generated files formatted successfully');

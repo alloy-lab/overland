@@ -7,7 +7,9 @@
     "build": "react-router build",
     "dev": "cross-env NODE_ENV=development node server.js",
     "start": "node server.js",
-    "typecheck": "react-router typegen && tsc -b"
+    "typecheck": "react-router typegen && tsc -b",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@acme/ui": "workspace:*",
@@ -33,6 +35,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "cross-env": "catalog:",
+    "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

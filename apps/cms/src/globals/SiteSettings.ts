@@ -1,4 +1,4 @@
-import type { GlobalConfig } from 'payload'
+import type { GlobalConfig } from 'payload';
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site',
@@ -19,7 +19,8 @@ export const SiteSettings: GlobalConfig = {
       name: 'description',
       type: 'textarea',
       required: true,
-      defaultValue: 'A modern, full-stack web application built with React Router SSR and Payload CMS',
+      defaultValue:
+        'A modern, full-stack web application built with React Router SSR and Payload CMS',
     },
     {
       name: 'logo',
@@ -97,4 +98,4 @@ export const SiteSettings: GlobalConfig = {
       ],
     },
   ],
-}
+};

@@ -21,6 +21,8 @@
     "clean": "pnpm run --recursive clean",
     "typecheck": "pnpm run --recursive typecheck",
     "lint": "pnpm run --recursive lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "pnpm run --recursive test",
     "cms:dev": "pnpm --filter cms dev",
     "web:dev": "pnpm --filter web dev",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "prettier": "catalog:",
     "typescript": "catalog:"
   },
   "pnpm": {

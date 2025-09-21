@@ -1,16 +1,16 @@
-import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { buildConfig } from 'payload'
-import sharp from 'sharp'
-import { fileURLToPath } from 'url'
+import { postgresAdapter } from '@payloadcms/db-postgres';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import path from 'path';
+import { buildConfig } from 'payload';
+import sharp from 'sharp';
+import { fileURLToPath } from 'url';
 
-import { Media } from './collections/Media'
-import { Users } from './collections/Users'
-import { SiteSettings } from './globals/SiteSettings'
+import { Media } from './collections/Media';
+import { Users } from './collections/Users';
+import { SiteSettings } from './globals/SiteSettings';
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default buildConfig({
   admin: {
@@ -33,4 +33,4 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
-})
+});

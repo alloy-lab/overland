@@ -12,11 +12,12 @@ Most starter templates try to impress you with everything they can cram in. This
 Think of it as polite defaults with clear exits:
 
 - 🚀 React Router v7 for the frontend. Fast, modern, battle-tested SSR.
-- 🗄 Payload CMS with Postgres. One source of truth for data and content.
-- 📄 Simple Pages collection for static content management.
-- 🎨 Tailwind CSS v4 styling without forcing a component religion.
-- 🧪 TypeScript, ESLint, Prettier, Vitest, Playwright. The boring essentials that save your future self.
-- 🐳 Dockerized and ready to deploy. Works out of the box with Coolify, with docs for Fly.
+- 🗄 Payload CMS v3 with PostgreSQL. One source of truth for data and content.
+- 📄 Pages collection for static content management with rich text and SEO.
+- 🎨 Tailwind CSS v4 styling with shared UI components.
+- 🧪 TypeScript, ESLint, Prettier, Vitest, Playwright. Comprehensive testing and code quality.
+- 🐳 Dockerized and ready to deploy. Works out of the box with Coolify.
+- 🔧 Automated type generation and API clients from CMS collections.
 
 And for the ambitious:
 
@@ -141,7 +142,7 @@ pnpm dev
 
 ### Collections
 
-- **Pages**: Static pages with rich text content, SEO, and navigation
+- **Pages**: Static pages with rich text content, SEO fields, and navigation
 - **Users**: CMS administrators and editors
 - **Media**: File uploads with local storage
 
@@ -152,11 +153,12 @@ pnpm dev
 ### Content Features
 
 - **Rich Text**: Lexical editor for content creation
-- **SEO**: Built-in SEO fields for all content types
+- **SEO**: Built-in SEO fields for Pages collection
 - **Drafts**: Draft/published workflow
 - **Media**: File uploads with local storage
 - **Navigation**: Built-in navigation management for pages
 - **Automated Type Generation**: Auto-generates TypeScript types and API clients from CMS collections
+- **Type Safety**: Full TypeScript support with auto-generated types
 
 ## 🔄 Automated Collection Registry
 
@@ -219,6 +221,32 @@ PAYLOAD_PUBLIC_SERVER_URL=https://your-domain.com
 PAYLOAD_PUBLIC_CMS_URL=https://your-domain.com/admin
 ```
 
+## 🧪 Testing
+
+The project includes comprehensive testing infrastructure:
+
+### Unit Tests
+
+- **Framework**: Vitest with jsdom environment
+- **Coverage**: Tests for all utility functions, API clients, and security middleware
+- **Location**: `apps/web/tests/unit/`
+- **Run**: `pnpm test:unit`
+
+### End-to-End Tests
+
+- **Framework**: Playwright for cross-browser testing
+- **Coverage**: Homepage, pages, and API endpoints
+- **Location**: `apps/web/tests/e2e/`
+- **Run**: `pnpm test:e2e`
+
+### Test Scripts
+
+- `pnpm test` - Run all tests (unit and E2E)
+- `pnpm test:unit` - Run unit tests only
+- `pnpm test:e2e` - Run end-to-end tests only
+- `pnpm test:ui` - Run Vitest UI for interactive testing
+- `pnpm test:coverage` - Run tests with coverage reporting
+
 ## 🔧 Development
 
 ### Adding New Collections
@@ -233,6 +261,7 @@ PAYLOAD_PUBLIC_CMS_URL=https://your-domain.com/admin
 1. Create route file in `apps/web/app/routes/` (React Router v7 file-based routing)
 2. Routes are automatically generated for CMS collections via the collection registry
 3. API clients are auto-generated and available in `apps/web/app/lib/clients/`
+4. Use the generated types from `apps/web/app/lib/types/` for type safety
 
 ### Shared Components
 
@@ -247,9 +276,17 @@ Add reusable components to `packages/ui/src/` and export from `index.ts`.
 - `pnpm typecheck` - Type check all packages
 - `pnpm lint` - Lint all packages
 - `pnpm test` - Run all tests (unit and E2E)
+- `pnpm test:unit` - Run unit tests only
+- `pnpm test:e2e` - Run end-to-end tests only
 - `pnpm format` - Format code with Prettier
 - `pnpm format:check` - Check code formatting
 - `pnpm generate:types` - Generate TypeScript types and API clients from CMS collections
+- `pnpm setup` - Run development setup via CLI
+- `pnpm new:collection` - Create new CMS collection with templates
+- `pnpm config` - Show or apply auto-detected configuration
+- `pnpm status` - Show development environment status
+- `pnpm env:generate` - Generate environment configuration
+- `pnpm docker:dev` - Start Docker development environment
 
 ## 🎨 Customization
 
@@ -278,11 +315,15 @@ The web application uses Tailwind CSS v4. You can:
 
 ## 🔒 Security
 
-- **Environment Variables**: Never commit `.env` files
-- **Payload Secret**: Use a strong, random secret key
+- **Environment Variables**: Never commit `.env` files, use `env.example` as template
+- **Payload Secret**: Use a strong, random secret key (32+ characters)
 - **Database**: Use strong passwords and restrict access
 - **HTTPS**: Always use HTTPS in production
 - **CORS**: Configure CORS properly for your domains
+- **Rate Limiting**: Built-in rate limiting for API endpoints
+- **Security Headers**: Helmet middleware for security headers
+- **Input Validation**: Express-validator for request validation
+- **File Upload Security**: File type and size validation
 
 ## 📊 Performance
 
@@ -329,16 +370,3 @@ pnpm update payload @payloadcms/db-postgres
 # Check for outdated packages
 pnpm outdated
 ```
-
-## 📈 Roadmap
-
-- [ ] Add image optimization
-- [ ] Implement Redis caching
-- [ ] Add search functionality
-- [ ] Enhanced error handling and logging
-- [ ] Security hardening (rate limiting, CORS, etc.)
-- [ ] Performance optimizations
-- [ ] SEO enhancements (sitemap, structured data)
-- [ ] Add email notifications
-- [ ] Implement user authentication
-- [ ] Add analytics integration

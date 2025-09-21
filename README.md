@@ -1,8 +1,9 @@
 <div align="center">
-  <img src="./apps/web/public/overland_banner.png" alt="the Overland Stack" width="100%">
+  <img src="./apps/web/app/welcome/logo-light.svg#gh-light-mode-only" alt="Overland Stack" width="400" style="max-width: 100%; height: auto;" />
+  <img src="./apps/web/app/welcome/logo-dark.svg#gh-dark-mode-only" alt="Overland Stack" width="400" style="max-width: 100%; height: auto;" />
 </div>
 
-A production-ready template that pairs React Router SSR (Vite) with Payload CMS on Postgres, packaged as a monorepo with pnpm and Docker Compose for local development and Coolify deployment.
+**The modern full-stack starter that gets you shipping faster.** React Router v7 + Payload CMS + PostgreSQL, with zero configuration overhead and production-ready deployment.
 
 ## Why this stack?
 

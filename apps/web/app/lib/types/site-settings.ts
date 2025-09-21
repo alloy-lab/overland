@@ -3,7 +3,6 @@
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import type { Media } from './base';

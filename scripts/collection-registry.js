@@ -187,7 +187,6 @@ class CollectionRegistry {
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 // Base response type
@@ -290,7 +289,6 @@ export interface FormSchema {
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import type { Media as BaseMedia } from './base';
@@ -321,7 +319,6 @@ export type MediaUpdate = Partial<MediaInput>;
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 ${importStatement}export interface ${displayName} {
@@ -355,7 +352,6 @@ export type ${displayName}Update = Partial<${displayName}Input>;
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 // Base types
@@ -478,7 +474,6 @@ ${fieldDefinitions}
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import { env } from "../env";
@@ -551,7 +546,6 @@ export abstract class BasePayloadClient {
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import { BasePayloadClient } from "./base";
@@ -590,7 +584,6 @@ export const siteSettingsClient = new SiteSettingsClient();
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import { BasePayloadClient } from "./base";
@@ -705,7 +698,6 @@ export const ${slug}Client = new ${displayName}Client();
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 // Export individual clients
@@ -777,7 +769,6 @@ export type { PayloadResponse, QueryOptions } from "../types";
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: ${new Date().toISOString()}
  */
 
 import {

@@ -12,6 +12,7 @@ build/
 *.tsbuildinfo
 payload-types.ts
 generated-schema.graphql
+**/.react-router/types/**
 
 # Environment files
 .env

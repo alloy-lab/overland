@@ -3,18 +3,17 @@
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: 2025-09-21T15:41:20.464Z
  */
 
 import {
   mediaClient,
   pagesClient,
-  usersClient,
   siteSettingsClient,
+  usersClient,
 } from './clients';
 
 // Re-export all clients for convenience
-export { mediaClient, pagesClient, usersClient, siteSettingsClient };
+export { mediaClient, pagesClient, siteSettingsClient, usersClient };
 
 // Legacy compatibility - main client object
 export const payloadClient = {
@@ -36,10 +35,10 @@ export const payloadClient = {
 
 // Re-export types
 export type {
-  PayloadResponse,
-  QueryOptions,
+  Email,
   Media,
   Pages,
-  Email,
+  PayloadResponse,
+  QueryOptions,
   SiteSettings,
 } from './types';

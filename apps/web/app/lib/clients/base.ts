@@ -3,11 +3,10 @@
  * Generated from Payload CMS collections
  *
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
- * Last generated: 2025-09-21T15:41:20.463Z
  */
 
 import { env } from '../env';
-import type { QueryOptions } from '../types';
+import type { PayloadResponse, QueryOptions } from '../types';
 
 export abstract class BasePayloadClient {
   protected baseUrl: string;

@@ -5,3 +5,15 @@
 # React Router
 /.react-router/
 /build/
+/.react-router/types/
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+*.lcov
+*.coverage
+junit.xml
+
+# Vitest
+.vitest/

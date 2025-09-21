@@ -59,3 +59,14 @@ generated-schema.graphql
 *.db
 *.sqlite
 *.sqlite3
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+*.lcov
+*.coverage
+junit.xml
+
+# Vitest
+.vitest/

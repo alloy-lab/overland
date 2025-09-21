@@ -46,7 +46,6 @@ export class PagesClient extends BasePayloadClient {
       ...options,
       where: {
         status: { equals: 'published' },
-        ...options?.where,
       },
     });
     return response.docs;

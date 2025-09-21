@@ -1,0 +1,64 @@
+# Lefthook configuration for Overland Stack
+# Runs typecheck, linting, and formatting checks before commits
+
+pre-commit:
+  parallel: true
+  commands:
+    # Type checking
+    typecheck:
+      glob: '**/*.{ts,tsx}'
+      run: pnpm typecheck
+      fail_text: '❌ TypeScript errors found. Please fix them before committing.'
+
+    # Linting
+    lint:
+      glob: '**/*.{ts,tsx,js,jsx}'
+      run: pnpm lint
+      fail_text: '❌ ESLint errors found. Please fix them before committing.'
+
+    # Format checking
+    format-check:
+      glob: '**/*.{ts,tsx,js,jsx,json,md,yml,yaml}'
+      run: pnpm format:check
+      fail_text: "❌ Code formatting issues found. Run 'pnpm format' to fix them."
+
+    # Build check (ensure everything compiles)
+    build-check:
+      run: pnpm build
+      fail_text: '❌ Build failed. Please fix build errors before committing.'
+
+pre-push:
+  parallel: true
+  commands:
+    # Run tests before pushing
+    test:
+      run: pnpm test
+      fail_text: '❌ Tests failed. Please fix failing tests before pushing.'
+
+    # Ensure types are up to date
+    generate-types:
+      run: pnpm generate:types
+      fail_text: '❌ Type generation failed. Please fix type generation issues.'
+
+# Skip hooks for certain file patterns
+skip_output:
+  - 'node_modules/**'
+  - 'dist/**'
+  - 'build/**'
+  - '.next/**'
+  - 'coverage/**'
+  - '*.log'
+  - '*.lock'
+  - '*.md'
+  - '*.yml'
+  - '*.yaml'
+
+# Colors for better output
+colors:
+  - red
+  - green
+  - yellow
+  - blue
+  - magenta
+  - cyan
+  - white

@@ -165,12 +165,12 @@ The application includes security headers:
 ```typescript
 // Example security headers
 app.use((req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains"
+    'Strict-Transport-Security',
+    'max-age=31536000; includeSubDomains'
   );
   next();
 });
@@ -236,21 +236,18 @@ detect-secrets scan
 ### If a Security Incident Occurs
 
 1. **Immediate Response**
-
    - Assess the scope and impact
    - Contain the incident
    - Preserve evidence
    - Notify stakeholders
 
 2. **Investigation**
-
    - Determine root cause
    - Identify affected systems
    - Document findings
    - Plan remediation
 
 3. **Remediation**
-
    - Apply fixes
    - Test solutions
    - Deploy updates

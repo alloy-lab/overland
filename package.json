@@ -26,6 +26,9 @@
     "test": "pnpm run --recursive test",
     "generate:types": "pnpm --filter cms generate:types && node scripts/collection-registry.js",
     "generate:web-types": "node scripts/collection-registry.js",
+    "prepare": "lefthook install",
+    "hooks:install": "lefthook install",
+    "hooks:uninstall": "lefthook uninstall",
     "cms:dev": "pnpm --filter cms dev",
     "web:dev": "pnpm --filter web dev",
     "cms:build": "pnpm --filter cms build",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "lefthook": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },

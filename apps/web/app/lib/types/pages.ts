@@ -15,9 +15,9 @@ export interface Pages {
   excerpt?: string;
   content: any;
   featuredImage?: Media;
-  status?: "draft" | "published";
+  status?: 'draft' | 'published';
   publishedDate?: string;
-  template?: "default" | "full-width" | "sidebar" | "landing";
+  template?: 'default' | 'full-width' | 'sidebar' | 'landing';
   showInNavigation?: boolean;
   navigationOrder?: number;
   parentPage?: any;

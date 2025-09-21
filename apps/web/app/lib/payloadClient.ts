@@ -6,20 +6,15 @@
  * Last generated: 2025-09-21T15:41:20.464Z
  */
 
-import { 
+import {
   mediaClient,
-    pagesClient,
-    usersClient,
-  siteSettingsClient
-} from "./clients";
+  pagesClient,
+  usersClient,
+  siteSettingsClient,
+} from './clients';
 
 // Re-export all clients for convenience
-export { 
-  mediaClient,
-    pagesClient,
-    usersClient,
-  siteSettingsClient
-};
+export { mediaClient, pagesClient, usersClient, siteSettingsClient };
 
 // Legacy compatibility - main client object
 export const payloadClient = {
@@ -34,17 +29,17 @@ export const payloadClient = {
 
   // Email
   getEmails: usersClient.getEmails.bind(usersClient),
-  
+
   // Site Settings
   getSiteSettings: siteSettingsClient.getSiteSettings.bind(siteSettingsClient),
 };
 
 // Re-export types
-export type { 
-  PayloadResponse, 
-  QueryOptions, 
+export type {
+  PayloadResponse,
+  QueryOptions,
   Media,
   Pages,
   Email,
-  SiteSettings
-} from "./types";
+  SiteSettings,
+} from './types';

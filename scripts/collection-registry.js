@@ -361,14 +361,13 @@ export * from './types/base';
 ${collections
   .map(collection => `export * from './types/${collection.slug}';`)
   .join('\n')}
+export * from './types/site-settings';
 
 // Re-export commonly used types for convenience
-${collections
-  .map(
-    collection =>
-      `export type { ${collection.displayName} } from './types/${collection.slug}';`
-  )
-  .join('\n')}
+export type { Media } from './types/media';
+export type { Pages } from './types/pages';
+export type { Email } from './types/users';
+export type { SiteSettings } from './types/site-settings';
 `;
 
     fs.writeFileSync(WEB_TYPES_PATH, indexContent);
@@ -476,8 +475,8 @@ ${fieldDefinitions}
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
-import { env } from "../env";
-import type { PayloadResponse, QueryOptions } from "../types";
+import { env } from '../env';
+import type { PayloadResponse, QueryOptions } from '../types';
 
 export abstract class BasePayloadClient {
   protected baseUrl: string;
@@ -548,8 +547,8 @@ export abstract class BasePayloadClient {
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
-import { BasePayloadClient } from "./base";
-import type { SiteSettings } from "../types";
+import { BasePayloadClient } from './base';
+import type { SiteSettings } from '../types';
 
 export class SiteSettingsClient extends BasePayloadClient {
   /**
@@ -586,8 +585,8 @@ export const siteSettingsClient = new SiteSettingsClient();
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
-import { BasePayloadClient } from "./base";
-import type { PayloadResponse, QueryOptions, ${displayName} } from "../types";
+import { BasePayloadClient } from './base';
+import type { PayloadResponse, QueryOptions, ${displayName} } from '../types';
 
 export class ${displayName}Client extends BasePayloadClient {
 ${methods}
@@ -648,7 +647,6 @@ export const ${slug}Client = new ${displayName}Client();
       ...options,
       where: {
         status: { equals: "published" },
-        ...options?.where,
       },
     });
     return response.docs;
@@ -689,7 +687,7 @@ export const ${slug}Client = new ${displayName}Client();
     const exports = collections
       .map(
         collection =>
-          `export { ${collection.slug}Client, ${collection.displayName}Client } from "./${collection.slug}";`
+          `export { ${collection.slug}Client, ${collection.displayName}Client } from './${collection.slug}';`
       )
       .join('\n');
 
@@ -702,13 +700,13 @@ export const ${slug}Client = new ${displayName}Client();
 
 // Export individual clients
 ${exports}
-export { siteSettingsClient, SiteSettingsClient } from "./site-settings";
+export { siteSettingsClient, SiteSettingsClient } from './site-settings';
 
 // Export base client
-export { BasePayloadClient } from "./base";
+export { BasePayloadClient } from './base';
 
 // Re-export types
-export type { PayloadResponse, QueryOptions } from "../types";
+export type { PayloadResponse, QueryOptions } from '../types';
 `;
 
     fs.writeFileSync(clientIndexPath, clientIndexContent);
@@ -720,10 +718,9 @@ export type { PayloadResponse, QueryOptions } from "../types";
   generateMainClient() {
     const collections = Array.from(this.collections.values());
 
-    const clientExports =
-      collections
-        .map(collection => `  ${collection.slug}Client`)
-        .join(',\n  ') + ',\n  siteSettingsClient';
+    const clientExports = collections
+      .map(collection => `  ${collection.slug}Client,`)
+      .join('\n');
 
     const legacyMethods = collections
       .map(collection => {
@@ -773,11 +770,13 @@ export type { PayloadResponse, QueryOptions } from "../types";
 
 import {
 ${clientExports}
-} from "./clients";
+  siteSettingsClient,
+} from './clients';
 
 // Re-export all clients for convenience
 export {
 ${clientExports}
+  siteSettingsClient,
 };
 
 // Legacy compatibility - main client object
@@ -792,9 +791,9 @@ ${legacyMethods}
 export type {
   PayloadResponse,
   QueryOptions,
-${collections.map(c => `  ${c.displayName}`).join(',\n')},
-  SiteSettings
-} from "./types";
+${collections.map(c => `  ${c.displayName},`).join('\n')}
+  SiteSettings,
+} from './types';
 `;
 
     fs.writeFileSync(WEB_CLIENT_PATH, mainClientContent);
@@ -849,7 +848,6 @@ ${collections.map(c => `  ${c.displayName}`).join(',\n')},
       ...options,
       where: {
         status: { equals: "published" },
-        ...options?.where,
       },
     });
     return response.docs;
@@ -897,14 +895,14 @@ ${collections.map(c => `  ${c.displayName}`).join(',\n')},
     const { slug, displayName, pluralName } = collection;
     const routePath = path.join(WEB_ROUTES_PATH, `${slug}._index.tsx`);
 
-    const content = `import type { MetaFunction } from "react-router";
-import { payloadClient } from "~/lib/payloadClient";
-import type { ${displayName} } from "~/lib/types";
+    const content = `import type { MetaFunction } from 'react-router';
+import { payloadClient } from '~/lib/payloadClient';
+import type { ${displayName} } from '~/lib/types';
 
 export const meta: MetaFunction = () => {
   return [
     { title: \`${pluralName} - Overland Stack\` },
-    { name: "description", content: \`Browse all ${pluralName.toLowerCase()}\` },
+    { name: 'description', content: \`Browse all ${pluralName.toLowerCase()}\` },
   ];
 };
 
@@ -922,32 +920,32 @@ export default function ${pluralName}Index({ loaderData }: { loaderData: { ${slu
   const { ${slug} } = loaderData;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">${pluralName}</h1>
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+      <h1 className='text-3xl font-bold text-gray-900 mb-8'>${pluralName}</h1>
 
       {${slug}.length === 0 ? (
-        <p className="text-gray-600">No ${pluralName.toLowerCase()} found.</p>
+        <p className='text-gray-600'>No ${pluralName.toLowerCase()} found.</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
           {${slug}.map((${slug.slice(0, -1)}) => (
-            <div key={${slug.slice(0, -1)}.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={${slug.slice(0, -1)}.id} className='bg-white rounded-lg shadow-md overflow-hidden'>
               {${slug.slice(0, -1)}.featuredImage && (
                 <img
                   src={${slug.slice(0, -1)}.featuredImage.url}
                   alt={${slug.slice(0, -1)}.featuredImage.alt || ${slug.slice(0, -1)}.title}
-                  className="w-full h-48 object-cover"
+                  className='w-full h-48 object-cover'
                 />
               )}
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  <a href={\`/${slug}/\${${slug.slice(0, -1)}.slug}\`} className="hover:text-blue-600">
+              <div className='p-6'>
+                <h2 className='text-xl font-semibold text-gray-900 mb-2'>
+                  <a href={\`/${slug}/\${${slug.slice(0, -1)}.slug}\`} className='hover:text-blue-600'>
                     {${slug.slice(0, -1)}.title}
                   </a>
                 </h2>
                 {${slug.slice(0, -1)}.excerpt && (
-                  <p className="text-gray-600 mb-4">{${slug.slice(0, -1)}.excerpt}</p>
+                  <p className='text-gray-600 mb-4'>{${slug.slice(0, -1)}.excerpt}</p>
                 )}
-                <div className="text-sm text-gray-500">
+                <div className='text-sm text-gray-500'>
                   {new Date(${slug.slice(0, -1)}.publishedDate || ${slug.slice(0, -1)}.createdAt).toLocaleDateString()}
                 </div>
               </div>
@@ -970,32 +968,32 @@ export default function ${pluralName}Index({ loaderData }: { loaderData: { ${slu
     const { slug, displayName } = collection;
     const routePath = path.join(WEB_ROUTES_PATH, `${slug}.\$slug.tsx`);
 
-    const content = `import type { MetaFunction } from "react-router";
-import { payloadClient } from "~/lib/payloadClient";
-import type { ${displayName} } from "~/lib/types";
+    const content = `import type { MetaFunction } from 'react-router';
+import { payloadClient } from '~/lib/payloadClient';
+import type { ${displayName} } from '~/lib/types';
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  if (!data?.${slug.slice(0, -1)}) {
+export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
+  if (!loaderData || !(loaderData as any)?.${slug.slice(0, -1)}) {
     return [
-      { title: "Not Found" },
-      { name: "description", content: "${displayName} not found" },
+      { title: 'Not Found' },
+      { name: 'description', content: '${displayName} not found' },
     ];
   }
 
-  const ${slug.slice(0, -1)} = data.${slug.slice(0, -1)};
+  const ${slug.slice(0, -1)} = (loaderData as any).${slug.slice(0, -1)};
   return [
     { title: \`\${${slug.slice(0, -1)}.title} - Overland Stack\` },
-    { name: "description", content: ${slug.slice(0, -1)}.excerpt || ${slug.slice(0, -1)}.seo?.description || "Read more" },
+    { name: 'description', content: ${slug.slice(0, -1)}.excerpt || ${slug.slice(0, -1)}.seo?.description || 'Read more' },
   ];
 };
 
 export async function loader({ params }: { params: { slug: string } }) {
   try {
-    const ${slug.slice(0, -1)} = await payloadClient.get${displayName}(params.slug);
+    const ${slug.slice(0, -1)} = await payloadClient.get${this.singularize(displayName)}(params.slug);
     return { ${slug.slice(0, -1)} };
   } catch (error) {
     console.error(\`Error loading ${displayName.toLowerCase()}:\`, error);
-    throw new Response("Not Found", { status: 404 });
+    throw new Response('Not Found', { status: 404 });
   }
 }
 
@@ -1003,29 +1001,29 @@ export default function ${displayName}Detail({ loaderData }: { loaderData: { ${s
   const { ${slug.slice(0, -1)} } = loaderData;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <article className="prose prose-lg max-w-none">
+    <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+      <article className='prose prose-lg max-w-none'>
         {${slug.slice(0, -1)}.featuredImage && (
           <img
             src={${slug.slice(0, -1)}.featuredImage.url}
             alt={${slug.slice(0, -1)}.featuredImage.alt || ${slug.slice(0, -1)}.title}
-            className="w-full h-64 object-cover rounded-lg mb-8"
+            className='w-full h-64 object-cover rounded-lg mb-8'
           />
         )}
 
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">{${slug.slice(0, -1)}.title}</h1>
+        <h1 className='text-4xl font-bold text-gray-900 mb-4'>{${slug.slice(0, -1)}.title}</h1>
 
         {${slug.slice(0, -1)}.excerpt && (
-          <p className="text-xl text-gray-600 mb-8">{${slug.slice(0, -1)}.excerpt}</p>
+          <p className='text-xl text-gray-600 mb-8'>{${slug.slice(0, -1)}.excerpt}</p>
         )}
 
-        <div className="prose prose-lg max-w-none">
+        <div className='prose prose-lg max-w-none'>
           {/* Rich text content would be rendered here */}
           <div dangerouslySetInnerHTML={{ __html: 'Rich text content rendering needed' }} />
         </div>
 
-        <div className="mt-8 pt-8 border-t border-gray-200">
-          <div className="text-sm text-gray-500">
+        <div className='mt-8 pt-8 border-t border-gray-200'>
+          <div className='text-sm text-gray-500'>
             Published: {new Date(${slug.slice(0, -1)}.publishedDate || ${slug.slice(0, -1)}.createdAt).toLocaleDateString()}
           </div>
         </div>

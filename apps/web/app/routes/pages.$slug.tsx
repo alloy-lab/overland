@@ -6,7 +6,7 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   if (!loaderData || !(loaderData as any)?.page) {
     return [
       { title: 'Not Found' },
-      { name: 'description', content: 'Page not found' },
+      { name: 'description', content: 'Pages not found' },
     ];
   }
 
@@ -25,7 +25,7 @@ export async function loader({ params }: { params: { slug: string } }) {
     const page = await payloadClient.getPage(params.slug);
     return { page };
   } catch (error) {
-    console.error(`Error loading page:`, error);
+    console.error(`Error loading pages:`, error);
     throw new Response('Not Found', { status: 404 });
   }
 }

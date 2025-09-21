@@ -1,51 +1,25 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
+RUN corepack enable pnpm
 
-RUN npm install -g pnpm
+FROM base AS development-dependencies-env
+COPY . /app
 WORKDIR /app
-
-# Copy workspace configuration
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy all package.json files for proper dependency resolution
-COPY apps/cms/package.json ./apps/cms/
-COPY apps/web/package.json ./apps/web/
-COPY packages/ui/package.json ./packages/ui/
-
-# Install all dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy source code
-COPY apps/web ./apps/web
-COPY packages/ui ./packages/ui
-
-# Build UI package first
-RUN pnpm --filter @acme/ui build
-
-# Build web app
-RUN pnpm --filter web build
-
-# Production stage
-FROM node:18-alpine AS production
-
-RUN npm install -g pnpm
+FROM base AS production-dependencies-env
+COPY ./package.json pnpm-lock.yaml /app/
 WORKDIR /app
-
-# Copy workspace configuration
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy all package.json files
-COPY apps/cms/package.json ./apps/cms/
-COPY apps/web/package.json ./apps/web/
-COPY packages/ui/package.json ./packages/ui/
-
-# Install production dependencies only
 RUN pnpm install --frozen-lockfile --prod
 
-# Copy built application from base stage
-COPY --from=base /app/apps/web/build ./apps/web/build
-COPY --from=base /app/apps/web/package.json ./apps/web/
+FROM base AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
+RUN pnpm run build
 
-EXPOSE 3000
-ENV NODE_ENV=production
-ENV PORT=3000
-CMD ["pnpm", "start", "--filter=web"]
+FROM base
+COPY ./package.json pnpm-lock.yaml server.js /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+COPY --from=build-env /app/build /app/build
+WORKDIR /app
+CMD ["pnpm", "run", "start"]

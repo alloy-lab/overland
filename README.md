@@ -4,16 +4,35 @@
 
 A production-ready template that pairs React Router SSR (Vite) with Payload CMS on Postgres, packaged as a monorepo with pnpm and Docker Compose for local development and Coolify deployment.
 
-## 🚀 Features
+## Why this stack?
 
-- **Frontend**: React 19 with React Router v7 and Vite SSR
-- **CMS**: Payload CMS v3 with PostgreSQL 17
-- **Authentication**: Payload built-in auth for CMS (public site is read-only)
-- **Data Flow**: Web app reads from Payload REST API with draft support
-- **Images**: Local disk storage (easily extensible to S3/R2)
-- **Deployment**: Docker containers optimized for Coolify on Hetzner
-- **Monorepo**: pnpm workspaces
-- **TypeScript**: Full TypeScript support across all packages
+Most starter templates try to impress you with everything they can cram in. This one takes the opposite approach: only what you actually need, plus recipes for what you might want later.
+
+Think of it as polite defaults with clear exits:
+
+- 🚀 React Router v7 for the frontend. Fast, modern, battle-tested SSR.
+- 🗄 Payload CMS with Postgres. One source of truth for data and content.
+- 📄 Simple Pages collection for static content management.
+- 🎨 Tailwind CSS v4 styling without forcing a component religion.
+- 🧪 TypeScript, ESLint, Prettier, Vitest, Playwright. The boring essentials that save your future self.
+- 🐳 Dockerized and ready to deploy. Works out of the box with Coolify, with docs for Fly.
+
+And for the ambitious:
+
+- 📧 Drop-in email (Mailgun/Postmark)
+- 📊 Error monitoring (Sentry)
+- 🌍 i18n support
+- 🖼 Image optimization route
+- 🌗 Dark/light theme toggle
+- 💳 Stripe payments example
+
+Everything else? Optional examples, not baggage. No dashboards you didn’t ask for, no lock-in you’ll regret later.
+
+## The Philosophy
+
+- Less scaffolding, more shipping. You start coding features, not deleting boilerplate.
+- One DB, one CMS. No split-brain SQLite vs Postgres drama.
+- Recipes, not mandates. If you want Stripe, i18n, or Grafana, the patterns are ready—but they don’t come pre-installed.
 
 ## 📁 Project Structure
 
@@ -22,22 +41,31 @@ overland-stack/
 ├── apps/
 │   ├── cms/                 # Payload CMS application
 │   │   ├── src/
-│   │   │   ├── collections/ # Content collections
-│   │   │   ├── globals/    # Global settings
-│   │   │   ├── fields/     # Reusable field configurations
-│   │   │   └── utils/      # Utility functions
+│   │   │   ├── app/         # Next.js app directory
+│   │   │   │   ├── (frontend)/ # Frontend routes
+│   │   │   │   └── (payload)/  # Payload admin routes
+│   │   │   ├── collections/ # Content collections (Pages, Users, Media)
+│   │   │   ├── globals/    # Global settings (SiteSettings)
+│   │   │   └── migrations/ # Database migrations
+│   │   ├── tests/          # CMS tests (unit, E2E)
 │   │   └── Dockerfile
-│   └── web/                 # React Router SSR application
-│       ├── src/
-│       │   ├── routes/     # React Router routes
-│       │   └── lib/        # Utilities and API client
+│   └── web/                 # React Router v7 SSR application
+│       ├── app/
+│       │   ├── routes/     # React Router v7 file-based routes
+│       │   ├── lib/        # Utilities and auto-generated API clients
+│       │   │   ├── clients/ # Auto-generated collection clients
+│       │   │   └── types/  # Auto-generated TypeScript types
+│       │   └── welcome/    # Welcome page components
+│       ├── tests/          # Web app tests (unit, E2E)
 │       └── Dockerfile
 ├── packages/
 │   └── ui/                  # Shared UI components
 ├── scripts/                 # Development and build scripts
+│   └── collection-registry.js # Automated type/client generation
 ├── docker-compose.yml       # Production deployment
 ├── docker-compose.dev.yml   # Development environment
 ├── pnpm-workspace.yaml     # pnpm workspace configuration
+├── lefthook.yml            # Git hooks configuration
 └── package.json            # Root workspace configuration
 ```
 
@@ -112,15 +140,13 @@ pnpm dev
 
 ### Collections
 
-- **Posts**: Blog posts with rich text content, tags, and SEO
-- **Books**: Book catalog with chapters and metadata
-- **Chapters**: Individual book chapters with rich text
-- **Tags**: Categorization system for posts
+- **Pages**: Static pages with rich text content, SEO, and navigation
 - **Users**: CMS administrators and editors
+- **Media**: File uploads with local storage
 
 ### Global Settings
 
-- **Site**: Site-wide configuration, social links, contact info
+- **SiteSettings**: Site-wide configuration, social links, contact info
 
 ### Content Features
 
@@ -128,7 +154,36 @@ pnpm dev
 - **SEO**: Built-in SEO fields for all content types
 - **Drafts**: Draft/published workflow
 - **Media**: File uploads with local storage
-- **Relationships**: Content relationships (posts to tags, books to chapters)
+- **Navigation**: Built-in navigation management for pages
+- **Automated Type Generation**: Auto-generates TypeScript types and API clients from CMS collections
+
+## 🔄 Automated Collection Registry
+
+The Overland Stack includes a powerful automated collection registry system that bridges the gap between Payload CMS and the web application:
+
+### Features
+
+- **Auto-Generated Types**: TypeScript interfaces generated from CMS collection schemas
+- **API Clients**: Individual client classes for each collection with type-safe methods
+- **Route Generation**: React Router v7 routes automatically created for collections
+- **Code Organization**: Separate files per collection for maintainable code structure
+
+### How It Works
+
+1. **Collection Detection**: Scans `apps/cms/src/collections/` for collection definitions
+2. **Type Generation**: Creates TypeScript interfaces in `apps/web/app/lib/types/`
+3. **Client Generation**: Generates API client classes in `apps/web/app/lib/clients/`
+4. **Route Generation**: Creates route files in `apps/web/app/routes/`
+5. **Auto-Formatting**: Ensures generated code follows project formatting standards
+
+### Usage
+
+```bash
+# Generate types and clients from CMS collections
+pnpm generate:types
+```
+
+This system eliminates the need to manually maintain type definitions and API clients, ensuring they stay in sync with your CMS schema.
 
 ## 🏗️ Building and Deployment
 
@@ -169,13 +224,14 @@ PAYLOAD_PUBLIC_CMS_URL=https://your-domain.com/admin
 
 1. Create collection file in `apps/cms/src/collections/`
 2. Import and add to `payload.config.ts`
-3. Generate types: `pnpm generate:types --filter=cms`
+3. Generate types and API clients: `pnpm generate:types`
+4. The automated collection registry will generate TypeScript types, API clients, and route files
 
 ### Adding New Routes
 
-1. Create route file in `apps/web/src/routes/`
-2. Add route to `apps/web/src/routes/index.ts`
-3. Update API client if needed
+1. Create route file in `apps/web/app/routes/` (React Router v7 file-based routing)
+2. Routes are automatically generated for CMS collections via the collection registry
+3. API clients are auto-generated and available in `apps/web/app/lib/clients/`
 
 ### Shared Components
 
@@ -189,16 +245,21 @@ Add reusable components to `packages/ui/src/` and export from `index.ts`.
 - `pnpm start` - Start production servers
 - `pnpm typecheck` - Type check all packages
 - `pnpm lint` - Lint all packages
+- `pnpm test` - Run all tests (unit and E2E)
+- `pnpm format` - Format code with Prettier
+- `pnpm format:check` - Check code formatting
+- `pnpm generate:types` - Generate TypeScript types and API clients from CMS collections
 
 ## 🎨 Customization
 
 ### Styling
 
-The web application uses Tailwind CSS classes. You can:
+The web application uses Tailwind CSS v4. You can:
 
 1. Add custom CSS in the web app
 2. Extend the UI package with styled components
 3. Replace Tailwind with your preferred CSS framework
+4. Customize the Tailwind configuration in `tailwind.config.js`
 
 ### CMS Customization
 
@@ -209,9 +270,10 @@ The web application uses Tailwind CSS classes. You can:
 
 ### API Extensions
 
-- Add custom API routes in `apps/cms/src/server.ts`
-- Extend the web app API in `apps/web/src/server.ts`
+- Add custom API routes in `apps/cms/src/app/(payload)/api/`
+- Extend the web app API in `apps/web/server/`
 - Add middleware for authentication, rate limiting, etc.
+- Use the auto-generated API clients in `apps/web/app/lib/clients/`
 
 ## 🔒 Security
 
@@ -272,8 +334,10 @@ pnpm outdated
 - [ ] Add image optimization
 - [ ] Implement Redis caching
 - [ ] Add search functionality
-- [ ] Create admin dashboard
+- [ ] Enhanced error handling and logging
+- [ ] Security hardening (rate limiting, CORS, etc.)
+- [ ] Performance optimizations
+- [ ] SEO enhancements (sitemap, structured data)
 - [ ] Add email notifications
-- [ ] Implement user comments
+- [ ] Implement user authentication
 - [ ] Add analytics integration
-- [ ] Create mobile app

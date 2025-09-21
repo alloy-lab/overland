@@ -77,17 +77,17 @@ Example:
 
 ```typescript
 // apps/cms/src/collections/Products.ts
-import type { CollectionConfig } from "payload";
+import type { CollectionConfig } from 'payload';
 
 export const Products: CollectionConfig = {
-  slug: "products",
+  slug: 'products',
   admin: {
-    useAsTitle: "name",
+    useAsTitle: 'name',
   },
   fields: [
     {
-      name: "name",
-      type: "text",
+      name: 'name',
+      type: 'text',
       required: true,
     },
     // ... more fields

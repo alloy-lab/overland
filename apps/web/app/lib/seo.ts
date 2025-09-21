@@ -1,4 +1,4 @@
-import type { Book, Chapter, Post, SiteSettings } from "./payloadClient";
+import type { Pages, SiteSettings } from './types';
 
 export interface SEOData {
   title: string;
@@ -10,9 +10,9 @@ export interface SEOData {
 }
 
 export function generateSEO(
-  data: Post | Book | Chapter | SiteSettings,
+  data: Pages | SiteSettings,
   siteSettings: SiteSettings,
-  type: "post" | "book" | "chapter" | "home" = "home"
+  type: 'page' | 'home' = 'home'
 ): SEOData {
   const baseTitle = siteSettings.title;
   const baseDescription = siteSettings.description;
@@ -22,26 +22,12 @@ export function generateSEO(
   let keywords: string | undefined;
   let image: string | undefined;
 
-  if (type === "post" && "title" in data) {
-    const post = data as Post;
-    title = post.seo?.title || `${post.title} | ${baseTitle}`;
-    description = post.seo?.description || post.excerpt || baseDescription;
-    keywords = post.seo?.keywords;
-    image = post.seo?.image?.url || post.featuredImage?.url;
-  } else if (type === "book" && "title" in data) {
-    const book = data as Book;
-    title = book.seo?.title || `${book.title} | ${baseTitle}`;
-    description = book.seo?.description || baseDescription;
-    keywords = book.seo?.keywords;
-    image = book.seo?.image?.url || book.coverImage?.url;
-  } else if (type === "chapter" && "title" in data) {
-    const chapter = data as Chapter;
-    title =
-      chapter.seo?.title ||
-      `${chapter.title} | ${chapter.book.title} | ${baseTitle}`;
-    description = chapter.seo?.description || baseDescription;
-    keywords = chapter.seo?.keywords;
-    image = chapter.seo?.image?.url;
+  if (type === 'page' && 'title' in data) {
+    const page = data as Pages;
+    title = page.seo?.title || `${page.title} | ${baseTitle}`;
+    description = page.seo?.description || page.excerpt || baseDescription;
+    keywords = page.seo?.keywords;
+    image = page.seo?.image?.url || page.featuredImage?.url;
   }
 
   return {
@@ -49,7 +35,7 @@ export function generateSEO(
     description,
     keywords,
     image,
-    type: type === "home" ? "website" : "article",
+    type: type === 'home' ? 'website' : 'article',
   };
 }
 
@@ -67,7 +53,7 @@ export function generateMetaTags(seo: SEOData): string {
   tags.push(
     `<meta property="og:title" content="${seo.title}" />`,
     `<meta property="og:description" content="${seo.description}" />`,
-    `<meta property="og:type" content="${seo.type || "website"}" />`
+    `<meta property="og:type" content="${seo.type || 'website'}" />`
   );
 
   if (seo.url) {
@@ -88,5 +74,5 @@ export function generateMetaTags(seo: SEOData): string {
     `<meta name="twitter:description" content="${seo.description}" />`
   );
 
-  return tags.join("\n    ");
+  return tags.join('\n    ');
 }

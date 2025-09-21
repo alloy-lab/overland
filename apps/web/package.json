@@ -23,7 +23,7 @@
     "@react-router/node": "catalog:",
     "compression": "catalog:",
     "cors": "catalog:",
-    "csurf": "catalog:",
+    "@sailshq/csurf": "catalog:",
     "dotenv": "catalog:",
     "express": "catalog:",
     "express-rate-limit": "catalog:",

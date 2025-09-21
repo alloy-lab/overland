@@ -1,5 +1,6 @@
+// @ts-ignore - @sailshq/csurf is a fork of csurf with same API
+import csrf from '@sailshq/csurf';
 import cors from 'cors';
-import csrf from 'csurf';
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import { body, param, query, validationResult } from 'express-validator';

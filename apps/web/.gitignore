@@ -17,3 +17,7 @@ junit.xml
 
 # Vitest
 .vitest/
+
+# Logs
+logs/
+*.log

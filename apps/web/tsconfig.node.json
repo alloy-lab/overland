@@ -1,6 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["server.js", "vite.config.ts"],
+  "include": [
+    "server.js",
+    "vite.config.ts",
+    "app/lib/logger.ts",
+    "app/lib/errorHandler.ts"
+  ],
   "compilerOptions": {
     "composite": true,
     "strict": true,

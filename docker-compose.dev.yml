@@ -41,6 +41,11 @@ services:
       PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL:-http://localhost:3001}
       PAYLOAD_PUBLIC_CMS_URL: ${PAYLOAD_PUBLIC_CMS_URL:-http://localhost:3001/admin}
       CMS_PORT: 3001
+      # Security settings (more permissive for development)
+      ENABLE_CSRF: ${ENABLE_CSRF:-false}
+      ENABLE_RATE_LIMITING: ${ENABLE_RATE_LIMITING:-false}
+      ENABLE_CORS: ${ENABLE_CORS:-true}
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
     # Host ports for development access
     ports:
       - '3001:3001'

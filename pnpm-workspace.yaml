@@ -54,6 +54,13 @@ catalog:
   vitest: 3.2.3
   winston: ^3.11.0
   '@types/winston': ^2.4.4
+  express-rate-limit: ^7.1.5
+  helmet: ^7.1.0
+  cors: ^2.8.5
+  express-validator: ^7.0.1
+  csurf: ^1.11.0
+  '@types/csurf': ^1.11.5
+  zod: ^3.22.4
 
 onlyBuiltDependencies:
   - '@swc/core'

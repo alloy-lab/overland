@@ -4,7 +4,10 @@
     "server.js",
     "vite.config.ts",
     "app/lib/logger.ts",
-    "app/lib/errorHandler.ts"
+    "app/lib/errorHandler.ts",
+    "app/lib/security.ts",
+    "app/lib/envValidation.ts",
+    "app/lib/apiSecurity.ts"
   ],
   "compilerOptions": {
     "composite": true,

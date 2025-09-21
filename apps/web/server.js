@@ -2,8 +2,16 @@ import compression from 'compression';
 import express from 'express';
 import morgan from 'morgan';
 
+import { env } from './app/lib/envValidation.js';
 import { expressErrorHandler } from './app/lib/errorHandler.js';
 import logger from './app/lib/logger.js';
+import {
+  apiSecurity,
+  authSecurity,
+  formSecurity,
+  requestSizeLimit,
+  staticSecurity,
+} from './app/lib/security.js';
 
 // Short-circuit the type-checking of the built output.
 const BUILD_PATH = './build/server/index.js';
@@ -12,16 +20,21 @@ const PORT = Number.parseInt(process.env.PORT || '3000');
 
 const app = express();
 
-// Security headers
-app.disable('x-powered-by');
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  next();
-});
+// Trust proxy for accurate IP addresses
+app.set('trust proxy', 1);
 
+// Security middleware
+app.disable('x-powered-by');
 app.use(compression());
+app.use(requestSizeLimit('10MB'));
+
+// Apply security middleware based on environment
+if (env.ENABLE_CORS) {
+  app.use(apiSecurity);
+}
+
+// Static file security
+app.use(staticSecurity);
 
 // Request logging
 app.use(
@@ -60,6 +73,11 @@ if (DEVELOPMENT) {
   app.use(express.static('build/client', { maxAge: '1h' }));
   app.use(await import(BUILD_PATH).then(mod => mod.app));
 }
+
+// API routes with security middleware
+app.use('/api', apiSecurity);
+app.use('/api/auth', authSecurity);
+app.use('/api/forms', formSecurity);
 
 // Global error handler (must be last)
 app.use(expressErrorHandler);

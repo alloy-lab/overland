@@ -31,27 +31,27 @@ catalog:
   cross-env: ^7.0.3
   dotenv: ^16.3.1
   eslint: ^9.16.0
-  eslint-config-next: 15.4.7
+  eslint-config-next: 15.5.3
   express: ^4.18.2
   graphql: ^16.8.1
   isbot: ^5.1.27
   jsdom: 26.1.0
   lefthook: ^1.8.0
   morgan: ^1.10.0
-  next: 15.4.7
+  next: 15.5.3
   payload: 3.55.0
-  playwright: 1.54.1
-  playwright-core: 1.54.1
+  playwright: 1.55.0
+  playwright-core: 1.55.0
   prettier: ^3.4.2
   react: 19.1.0
   react-dom: 19.1.0
   react-router: ^7.7.1
-  sharp: 0.34.2
+  sharp: 0.34.4
   tailwindcss: ^4.1.4
   typescript: 5.7.3
   vite: ^6.3.3
   vite-tsconfig-paths: 5.1.4
-  vitest: 3.2.3
+  vitest: 3.2.4
   winston: ^3.11.0
   '@types/winston': ^2.4.4
   express-rate-limit: ^7.1.5

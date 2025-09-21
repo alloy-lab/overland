@@ -13,49 +13,6 @@ export interface PayloadResponse<T> {
   nextPage: number | null;
 }
 
-export interface Post {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt?: string;
-  content: any;
-  featuredImage?: {
-    id: string;
-    url: string;
-    alt?: string;
-  };
-  tags?: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    color?: string;
-  }>;
-  author: {
-    id: string;
-    name: string;
-  };
-  publishedDate: string;
-  status: "draft" | "published";
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string;
-    image?: {
-      id: string;
-      url: string;
-    };
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Tag {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  color?: string;
-}
 
 export interface SiteSettings {
   title: string;
@@ -110,42 +67,6 @@ class PayloadClient {
     return response.json();
   }
 
-  // Posts
-  async getPosts(options?: {
-    limit?: number;
-    page?: number;
-    where?: any;
-    sort?: string;
-    draft?: boolean;
-  }): Promise<PayloadResponse<Post>> {
-    const params = new URLSearchParams();
-
-    if (options?.limit) params.set("limit", options.limit.toString());
-    if (options?.page) params.set("page", options.page.toString());
-    if (options?.sort) params.set("sort", options.sort);
-    if (options?.draft) params.set("draft", "true");
-    if (options?.where) params.set("where", JSON.stringify(options.where));
-
-    return this.fetch<PayloadResponse<Post>>(`/posts?${params.toString()}`);
-  }
-
-  async getPost(slug: string, draft = false): Promise<Post> {
-    const params = new URLSearchParams();
-    if (draft) params.set("draft", "true");
-
-    const response = await this.fetch<PayloadResponse<Post>>(
-      `/posts?where[slug][equals]=${slug}&${params.toString()}`
-    );
-    if (response.docs.length === 0) {
-      throw new Error(`Post with slug "${slug}" not found`);
-    }
-    return response.docs[0];
-  }
-
-  // Tags
-  async getTags(): Promise<PayloadResponse<Tag>> {
-    return this.fetch<PayloadResponse<Tag>>("/tags");
-  }
 
   // Site Settings
   async getSiteSettings(): Promise<SiteSettings> {

@@ -3,13 +3,13 @@ import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Overland Stack" },
+    { name: "description", content: "A modern web application built with React Router SSR and Payload CMS" },
   ];
 }
 
 export function loader({ context }: Route.LoaderArgs) {
-  return { message: context.VALUE_FROM_EXPRESS };
+  return { message: "Welcome to Overland Stack!" };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {

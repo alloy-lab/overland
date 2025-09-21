@@ -24,6 +24,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "pnpm run --recursive test",
+    "generate:types": "pnpm --filter cms generate:types && node scripts/collection-registry.js",
+    "generate:web-types": "node scripts/collection-registry.js",
     "cms:dev": "pnpm --filter cms dev",
     "web:dev": "pnpm --filter web dev",
     "cms:build": "pnpm --filter cms build",

@@ -4,16 +4,35 @@
 
 A production-ready template that pairs React Router SSR (Vite) with Payload CMS on Postgres, packaged as a monorepo with pnpm and Docker Compose for local development and Coolify deployment.
 
-## 🚀 Features
+## Why this stack?
 
-- **Frontend**: React 19 with React Router v7 and Vite SSR
-- **CMS**: Payload CMS v3 with PostgreSQL 17
-- **Authentication**: Payload built-in auth for CMS (public site is read-only)
-- **Data Flow**: Web app reads from Payload REST API with draft support
-- **Images**: Local disk storage (easily extensible to S3/R2)
-- **Deployment**: Docker containers optimized for Coolify on Hetzner
-- **Monorepo**: pnpm workspaces
-- **TypeScript**: Full TypeScript support across all packages
+Most starter templates try to impress you with everything they can cram in. This one takes the opposite approach: only what you actually need, plus recipes for what you might want later.
+
+Think of it as polite defaults with clear exits:
+
+- 🚀 Remix for the frontend. Fast, modern, battle-tested.
+- 🗄 Payload CMS with Postgres. One source of truth for data and content.
+- 🔐 Cookie-based auth with password reset baked in.
+- 🎨 Tailwind styling without forcing a component religion.
+- 🧪 TypeScript, ESLint, Prettier, Vitest, Playwright. The boring essentials that save your future self.
+- 🐳 Dockerized and ready to deploy. Works out of the box with Coolify, with docs for Fly.
+
+And for the ambitious:
+
+- 📧 Drop-in email (Mailgun/Postmark)
+- 📊 Error monitoring (Sentry)
+- 🌍 i18n support
+- 🖼 Image optimization route
+- 🌗 Dark/light theme toggle
+- 💳 Stripe payments example
+
+Everything else? Optional examples, not baggage. No dashboards you didn’t ask for, no lock-in you’ll regret later.
+
+## The Philosophy
+
+- Less scaffolding, more shipping. You start coding features, not deleting boilerplate.
+- One DB, one CMS. No split-brain SQLite vs Postgres drama.
+- Recipes, not mandates. If you want Stripe, i18n, or Grafana, the patterns are ready—but they don’t come pre-installed.
 
 ## 📁 Project Structure
 

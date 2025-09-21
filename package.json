@@ -25,6 +25,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "pnpm run --recursive test",
+    "test:unit": "pnpm run --recursive test:unit",
     "generate:types": "pnpm --filter cms generate:types && node scripts/collection-registry.js",
     "generate:web-types": "node scripts/collection-registry.js",
     "prepare": "lefthook install",

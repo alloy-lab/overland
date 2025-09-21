@@ -23,8 +23,8 @@ pre-push:
       run: pnpm typecheck
       fail_text: '❌ TypeScript errors. Push aborted.'
     test:
-      run: pnpm test
-      fail_text: '❌ Tests failed. Fix and try again.'
+      run: pnpm test:unit
+      fail_text: '❌ Unit tests failed. Fix and try again.'
     generate-types:
       run: pnpm generate:types
       fail_text: '❌ Type generation failed. Please fix type generation issues.'

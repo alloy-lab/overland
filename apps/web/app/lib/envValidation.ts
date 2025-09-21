@@ -22,16 +22,14 @@ const envSchema = z.object({
     .string()
     .url('PAYLOAD_PUBLIC_CMS_URL must be a valid URL'),
 
-  // Security
+  // Security (optional)
+  API_KEY: z.string().optional(),
+  ADMIN_TOKEN: z.string().optional(),
   ALLOWED_ORIGIN_1: z.string().url().optional(),
   ALLOWED_ORIGIN_2: z.string().url().optional(),
   ADMIN_IP_WHITELIST: z.string().optional(),
 
   // Optional features
-  ENABLE_CSRF: z
-    .string()
-    .transform(val => val === 'true')
-    .default('true'),
   ENABLE_RATE_LIMITING: z
     .string()
     .transform(val => val === 'true')

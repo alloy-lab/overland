@@ -29,7 +29,6 @@ API_KEY=your-api-key-for-external-access
 ADMIN_TOKEN=your-admin-token-for-admin-access
 
 # Security Features (true/false)
-ENABLE_CSRF=true
 ENABLE_RATE_LIMITING=true
 ENABLE_CORS=true
 
@@ -63,11 +62,11 @@ ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif,image/webp,application/pdf,tex
 - X-XSS-Protection: 1; mode=block
 - HSTS (HTTP Strict Transport Security)
 
-### 4. CSRF Protection
+### 4. Input Sanitization
 
-- CSRF tokens for form submissions
-- Secure cookie configuration
-- SameSite cookie policy
+- XSS prevention through input sanitization
+- HTML tag and attribute filtering
+- Event handler removal
 
 ### 5. Input Validation
 

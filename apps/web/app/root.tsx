@@ -8,10 +8,10 @@ import {
 } from 'react-router';
 
 import type { Route } from './+types/root';
-import { ErrorBoundary as AppErrorBoundary } from './lib/ErrorBoundary';
-import { handleError } from './lib/errorHandler';
-import logger from './lib/logger';
 import './app.css';
+import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { ErrorBoundary as AppErrorBoundary } from './lib/ErrorBoundary';
+import logger from './lib/logger';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -37,6 +37,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <AppErrorBoundary>{children}</AppErrorBoundary>
+        <PerformanceMonitor />
         <ScrollRestoration />
         <Scripts />
       </body>

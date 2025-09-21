@@ -339,6 +339,9 @@ importers:
       react-router:
         specifier: 'catalog:'
         version: 7.9.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      sharp:
+        specifier: 'catalog:'
+        version: 0.34.4
       winston:
         specifier: 'catalog:'
         version: 3.17.0

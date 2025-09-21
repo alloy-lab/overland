@@ -35,6 +35,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router": "catalog:",
+    "sharp": "catalog:",
     "winston": "catalog:",
     "zod": "catalog:"
   },

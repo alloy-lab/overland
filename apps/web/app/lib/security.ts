@@ -259,6 +259,7 @@ export const sanitizeRequest = (
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/javascript:/gi, '')
       .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+      .replace(/on\w+\s*=\s*[^>\s]+/gi, '')
       .trim();
   };
 

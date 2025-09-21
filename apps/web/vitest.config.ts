@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+import path from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
@@ -37,7 +38,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '~': '/app',
+      '~': path.resolve(__dirname, './app'),
     },
   },
 });

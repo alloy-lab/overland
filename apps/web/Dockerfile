@@ -1,51 +1,22 @@
-FROM node:18-alpine AS base
-
-RUN npm install -g pnpm
+FROM node:20-alpine AS development-dependencies-env
+COPY . /app
 WORKDIR /app
+RUN npm ci
 
-# Copy workspace configuration
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
-# Copy all package.json files for proper dependency resolution
-COPY apps/cms/package.json ./apps/cms/
-COPY apps/web/package.json ./apps/web/
-COPY packages/ui/package.json ./packages/ui/
-
-# Install all dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy source code
-COPY apps/web ./apps/web
-COPY packages/ui ./packages/ui
-
-# Build UI package first
-RUN pnpm --filter @acme/ui build
-
-# Build web app
-RUN pnpm --filter web build
-
-# Production stage
-FROM node:18-alpine AS production
-
-RUN npm install -g pnpm
+FROM node:20-alpine AS production-dependencies-env
+COPY ./package.json package-lock.json /app/
 WORKDIR /app
+RUN npm ci --omit=dev
 
-# Copy workspace configuration
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+FROM node:20-alpine AS build-env
+COPY . /app/
+COPY --from=development-dependencies-env /app/node_modules /app/node_modules
+WORKDIR /app
+RUN npm run build
 
-# Copy all package.json files
-COPY apps/cms/package.json ./apps/cms/
-COPY apps/web/package.json ./apps/web/
-COPY packages/ui/package.json ./packages/ui/
-
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
-
-# Copy built application from base stage
-COPY --from=base /app/apps/web/build ./apps/web/build
-COPY --from=base /app/apps/web/package.json ./apps/web/
-
-EXPOSE 3000
-ENV NODE_ENV=production
-ENV PORT=3000
-CMD ["pnpm", "start", "--filter=web"]
+FROM node:20-alpine
+COPY ./package.json package-lock.json server.js /app/
+COPY --from=production-dependencies-env /app/node_modules /app/node_modules
+COPY --from=build-env /app/build /app/build
+WORKDIR /app
+CMD ["npm", "run", "start"]

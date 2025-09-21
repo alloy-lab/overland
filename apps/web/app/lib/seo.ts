@@ -1,4 +1,4 @@
-import type { Book, Chapter, Post, SiteSettings } from "./payloadClient";
+import type { Post, SiteSettings } from "./payloadClient";
 
 export interface SEOData {
   title: string;
@@ -10,9 +10,9 @@ export interface SEOData {
 }
 
 export function generateSEO(
-  data: Post | Book | Chapter | SiteSettings,
+  data: Post | SiteSettings,
   siteSettings: SiteSettings,
-  type: "post" | "book" | "chapter" | "home" = "home"
+  type: "post" | "home" = "home"
 ): SEOData {
   const baseTitle = siteSettings.title;
   const baseDescription = siteSettings.description;
@@ -28,20 +28,6 @@ export function generateSEO(
     description = post.seo?.description || post.excerpt || baseDescription;
     keywords = post.seo?.keywords;
     image = post.seo?.image?.url || post.featuredImage?.url;
-  } else if (type === "book" && "title" in data) {
-    const book = data as Book;
-    title = book.seo?.title || `${book.title} | ${baseTitle}`;
-    description = book.seo?.description || baseDescription;
-    keywords = book.seo?.keywords;
-    image = book.seo?.image?.url || book.coverImage?.url;
-  } else if (type === "chapter" && "title" in data) {
-    const chapter = data as Chapter;
-    title =
-      chapter.seo?.title ||
-      `${chapter.title} | ${chapter.book.title} | ${baseTitle}`;
-    description = chapter.seo?.description || baseDescription;
-    keywords = chapter.seo?.keywords;
-    image = chapter.seo?.image?.url;
   }
 
   return {

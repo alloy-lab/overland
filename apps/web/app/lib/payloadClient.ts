@@ -49,65 +49,6 @@ export interface Post {
   updatedAt: string;
 }
 
-export interface Book {
-  id: string;
-  title: string;
-  slug: string;
-  description?: any;
-  coverImage?: {
-    id: string;
-    url: string;
-    alt?: string;
-  };
-  author: string;
-  isbn?: string;
-  publishedDate?: string;
-  pages?: number;
-  status: "draft" | "published";
-  chapters?: Array<{
-    id: string;
-    title: string;
-    slug: string;
-    chapterNumber: number;
-  }>;
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string;
-    image?: {
-      id: string;
-      url: string;
-    };
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Chapter {
-  id: string;
-  title: string;
-  slug: string;
-  content: any;
-  book: {
-    id: string;
-    title: string;
-    slug: string;
-  };
-  chapterNumber: number;
-  status: "draft" | "published";
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string;
-    image?: {
-      id: string;
-      url: string;
-    };
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface Tag {
   id: string;
   name: string;
@@ -197,58 +138,6 @@ class PayloadClient {
     );
     if (response.docs.length === 0) {
       throw new Error(`Post with slug "${slug}" not found`);
-    }
-    return response.docs[0];
-  }
-
-  // Books
-  async getBooks(options?: {
-    limit?: number;
-    page?: number;
-    where?: any;
-    sort?: string;
-    draft?: boolean;
-  }): Promise<PayloadResponse<Book>> {
-    const params = new URLSearchParams();
-
-    if (options?.limit) params.set("limit", options.limit.toString());
-    if (options?.page) params.set("page", options.page.toString());
-    if (options?.sort) params.set("sort", options.sort);
-    if (options?.draft) params.set("draft", "true");
-    if (options?.where) params.set("where", JSON.stringify(options.where));
-
-    return this.fetch<PayloadResponse<Book>>(`/books?${params.toString()}`);
-  }
-
-  async getBook(slug: string, draft = false): Promise<Book> {
-    const params = new URLSearchParams();
-    if (draft) params.set("draft", "true");
-
-    const response = await this.fetch<PayloadResponse<Book>>(
-      `/books?where[slug][equals]=${slug}&${params.toString()}`
-    );
-    if (response.docs.length === 0) {
-      throw new Error(`Book with slug "${slug}" not found`);
-    }
-    return response.docs[0];
-  }
-
-  // Chapters
-  async getChapter(
-    bookSlug: string,
-    chapterSlug: string,
-    draft = false
-  ): Promise<Chapter> {
-    const params = new URLSearchParams();
-    if (draft) params.set("draft", "true");
-
-    const response = await this.fetch<PayloadResponse<Chapter>>(
-      `/chapters?where[and][0][book.slug][equals]=${bookSlug}&where[and][1][slug][equals]=${chapterSlug}&${params.toString()}`
-    );
-    if (response.docs.length === 0) {
-      throw new Error(
-        `Chapter "${chapterSlug}" in book "${bookSlug}" not found`
-      );
     }
     return response.docs[0];
   }

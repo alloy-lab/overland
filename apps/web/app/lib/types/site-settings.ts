@@ -7,33 +7,16 @@
 
 export interface SiteSettings {
   id: string;
-  title?: string;
-  description?: string;
   siteName?: string;
   siteDescription?: string;
-  logo?: {
-    url?: string;
-    alt?: string;
-  };
+  logo?: any;
   favicon?: any;
-  social?: {
-    twitter?: string;
-    facebook?: string;
-    instagram?: string;
-    linkedin?: string;
-    github?: string;
-  };
   socialMedia?: {
     twitter?: string;
     facebook?: string;
     instagram?: string;
     linkedin?: string;
     github?: string;
-  };
-  contact?: {
-    email?: string;
-    phone?: string;
-    address?: string;
   };
   contactInfo?: {
     email?: string;

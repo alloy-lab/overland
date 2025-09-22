@@ -14,7 +14,7 @@ export interface Pages {
   excerpt?: string;
   content: any;
   featuredImage?: Media;
-  status?: 'draft' | 'scheduled' | 'published' | 'archived';
+  status?: 'draft' | 'published';
   publishedDate?: string;
   scheduledDate?: string;
   expirationDate?: string;

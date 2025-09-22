@@ -45,13 +45,15 @@ function generateWebsiteSchema(
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: siteSettings.title,
-    description: siteSettings.description,
+    name: siteSettings.siteName || 'Overland Stack',
+    description:
+      siteSettings.siteDescription || 'A modern web development stack',
     url: baseUrl,
     publisher: {
       '@type': 'Organization',
-      name: siteSettings.title,
-      description: siteSettings.description,
+      name: siteSettings.siteName || 'Overland Stack',
+      description:
+        siteSettings.siteDescription || 'A modern web development stack',
       url: baseUrl,
       ...(siteSettings.logo && {
         logo: {
@@ -59,17 +61,17 @@ function generateWebsiteSchema(
           url: siteSettings.logo.url,
         },
       }),
-      ...(siteSettings.social && {
-        sameAs: Object.values(siteSettings.social).filter(Boolean),
+      ...(siteSettings.socialMedia && {
+        sameAs: Object.values(siteSettings.socialMedia).filter(Boolean),
       }),
-      ...(siteSettings.contact && {
+      ...(siteSettings.contactInfo && {
         contactPoint: {
           '@type': 'ContactPoint',
-          ...(siteSettings.contact.email && {
-            email: siteSettings.contact.email,
+          ...(siteSettings.contactInfo.email && {
+            email: siteSettings.contactInfo.email,
           }),
-          ...(siteSettings.contact.phone && {
-            telephone: siteSettings.contact.phone,
+          ...(siteSettings.contactInfo.phone && {
+            telephone: siteSettings.contactInfo.phone,
           }),
         },
       }),
@@ -102,18 +104,21 @@ function generateArticleSchema(
     '@type': 'Article',
     headline: page.title,
     description:
-      page.seo?.description || page.excerpt || siteSettings.description,
+      page.seo?.description ||
+      page.excerpt ||
+      siteSettings.siteDescription ||
+      'A modern web development stack',
     url: pageUrl,
     datePublished: publishedDate,
     dateModified: modifiedDate,
     author: {
       '@type': 'Organization',
-      name: siteSettings.title,
+      name: siteSettings.siteName || 'Overland Stack',
       url: baseUrl,
     },
     publisher: {
       '@type': 'Organization',
-      name: siteSettings.title,
+      name: siteSettings.siteName || 'Overland Stack',
       url: baseUrl,
       ...(siteSettings.logo && {
         logo: {
@@ -185,26 +190,27 @@ export function generateLocalBusinessSchema(
   baseUrl: string,
   siteSettings: SiteSettings
 ): any {
-  if (!siteSettings.contact?.address) return null;
+  if (!siteSettings.contactInfo?.address) return null;
 
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: siteSettings.title,
-    description: siteSettings.description,
+    name: siteSettings.siteName || 'Overland Stack',
+    description:
+      siteSettings.siteDescription || 'A modern web development stack',
     url: baseUrl,
     ...(siteSettings.logo && {
       image: siteSettings.logo.url,
     }),
     address: {
       '@type': 'PostalAddress',
-      streetAddress: siteSettings.contact.address,
+      streetAddress: siteSettings.contactInfo.address,
     },
-    ...(siteSettings.contact.phone && {
-      telephone: siteSettings.contact.phone,
+    ...(siteSettings.contactInfo.phone && {
+      telephone: siteSettings.contactInfo.phone,
     }),
-    ...(siteSettings.contact.email && {
-      email: siteSettings.contact.email,
+    ...(siteSettings.contactInfo.email && {
+      email: siteSettings.contactInfo.email,
     }),
   };
 }

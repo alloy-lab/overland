@@ -51,10 +51,11 @@ describe('SEO Utilities', () => {
 
       expect(result).toEqual({
         title: 'Overland Stack',
-        description: 'A modern full-stack application',
+        description: 'A modern web development stack',
         keywords: undefined,
         image: undefined,
         type: 'website',
+        url: undefined,
       });
     });
 

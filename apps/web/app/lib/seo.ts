@@ -18,8 +18,9 @@ export function generateSEO(
   baseUrl?: string,
   breadcrumbs?: Array<{ name: string; url: string }>
 ): SEOData {
-  const baseTitle = siteSettings.title;
-  const baseDescription = siteSettings.description;
+  const baseTitle = siteSettings.siteName || 'Overland Stack';
+  const baseDescription =
+    siteSettings.siteDescription || 'A modern web development stack';
 
   let title = baseTitle;
   let description = baseDescription;

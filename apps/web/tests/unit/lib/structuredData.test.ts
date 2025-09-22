@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
-  generateStructuredData,
   generateFAQSchema,
   generateLocalBusinessSchema,
   generateProductSchema,
+  generateStructuredData,
 } from '~/lib/structuredData';
 import type { Pages } from '~/lib/types/pages';
 import type { SiteSettings } from '~/lib/types/site-settings';
@@ -11,8 +11,8 @@ import type { SiteSettings } from '~/lib/types/site-settings';
 describe('Structured Data Generation', () => {
   const mockSiteSettings: SiteSettings = {
     id: '1',
-    title: 'Test Site',
-    description: 'Test Description',
+    siteName: 'Test Site',
+    siteDescription: 'Test Description',
     logo: {
       id: '1',
       url: 'https://example.com/logo.png',
@@ -25,11 +25,11 @@ describe('Structured Data Generation', () => {
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
     },
-    social: {
+    socialMedia: {
       twitter: 'https://twitter.com/testsite',
       github: 'https://github.com/testsite',
     },
-    contact: {
+    contactInfo: {
       email: 'contact@example.com',
       phone: '+1-555-123-4567',
       address: '123 Test St, Test City, TC 12345',
@@ -213,7 +213,7 @@ describe('Structured Data Generation', () => {
     it('should return null when no address is provided', () => {
       const siteSettingsWithoutAddress = {
         ...mockSiteSettings,
-        contact: { email: 'test@example.com' },
+        contactInfo: { email: 'test@example.com' },
       };
 
       const schema = generateLocalBusinessSchema(

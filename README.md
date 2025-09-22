@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="./apps/web/public/stratos.png" alt="Stratos the sky bison" width="400" style="max-width: 100%; height: auto;" />
   <img src="./apps/web/app/welcome/logo-light.svg#gh-light-mode-only" alt="Overland Stack" width="400" style="max-width: 100%; height: auto;" />
   <img src="./apps/web/app/welcome/logo-dark.svg#gh-dark-mode-only" alt="Overland Stack" width="400" style="max-width: 100%; height: auto;" />
 </div>

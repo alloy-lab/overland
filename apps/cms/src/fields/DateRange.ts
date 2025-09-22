@@ -40,7 +40,7 @@ export const DateRange: Field = {
   admin: {
     description: 'Date range for events, campaigns, or time-sensitive content',
   },
-  validate: value => {
+  validate: (value: any) => {
     if (value?.startDate && value?.endDate) {
       const start = new Date(value.startDate);
       const end = new Date(value.endDate);

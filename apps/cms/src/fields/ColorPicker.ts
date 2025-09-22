@@ -36,7 +36,10 @@ export const CustomColor: Field = {
     description: 'Enter a custom hex color (e.g., #FF5733)',
     condition: data => data.color === 'custom',
   },
-  validate: (value, { siblingData }) => {
+  validate: (
+    value: string | null | undefined,
+    { siblingData }: { siblingData: any }
+  ) => {
     if (siblingData.color === 'custom' && value) {
       const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
       if (!hexPattern.test(value)) {

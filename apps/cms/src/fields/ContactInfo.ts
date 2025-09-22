@@ -35,7 +35,7 @@ export const ContactInfo: Field = {
       admin: {
         description: 'Website URL',
       },
-      validate: value => {
+      validate: (value: string | null | undefined) => {
         if (value && !value.startsWith('http')) {
           return 'Website URL must start with http:// or https://';
         }

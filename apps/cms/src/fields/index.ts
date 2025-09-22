@@ -7,8 +7,10 @@ export { ContactInfo } from './ContactInfo';
 export { DateRange } from './DateRange';
 export { MediaGallery } from './MediaGallery';
 
+import type { Field } from 'payload';
+
 // Field combinations for common use cases
-export const ThemeFields = {
+export const ThemeFields: Field = {
   name: 'theme',
   type: 'group',
   fields: [
@@ -68,7 +70,7 @@ export const ThemeFields = {
   },
 };
 
-export const SEOFields = {
+export const SEOFields: Field = {
   name: 'seo',
   type: 'group',
   fields: [

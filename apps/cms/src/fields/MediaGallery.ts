@@ -35,7 +35,7 @@ export const MediaGallery: Field = {
       admin: {
         description: 'Optional link when image is clicked',
       },
-      validate: value => {
+      validate: (value: string | null | undefined) => {
         if (value && !value.startsWith('http') && !value.startsWith('/')) {
           return 'Link must be a valid URL or start with /';
         }

@@ -140,13 +140,13 @@ export const Media: CollectionConfig = {
         if (data.filename && req.file) {
           try {
             const sharp = await import('sharp');
-            const metadata = await sharp.default(req.file.buffer).metadata();
+            const metadata = await sharp.default(req.file.data).metadata();
 
             data.metadata = {
               width: metadata.width,
               height: metadata.height,
               format: metadata.format,
-              size: req.file.buffer.length,
+              size: req.file.size,
               optimized: false,
             };
           } catch (error) {

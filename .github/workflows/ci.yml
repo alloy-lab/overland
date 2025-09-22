@@ -126,6 +126,23 @@ jobs:
           PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3001
           PAYLOAD_PUBLIC_CMS_URL: http://localhost:3001/admin
 
+      - name: Collect Playwright Reports
+        if: always()
+        run: |
+          mkdir -p playwright-report
+          # Copy web app report if it exists
+          if [ -d "apps/web/playwright-report" ]; then
+            cp -r apps/web/playwright-report/* playwright-report/ 2>/dev/null || true
+          fi
+          # Copy CMS report if it exists
+          if [ -d "apps/cms/playwright-report" ]; then
+            cp -r apps/cms/playwright-report/* playwright-report/ 2>/dev/null || true
+          fi
+          # Create a simple index if no reports were found
+          if [ ! -d "playwright-report" ] || [ -z "$(ls -A playwright-report 2>/dev/null)" ]; then
+            echo "No Playwright reports found" > playwright-report/index.html
+          fi
+
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()

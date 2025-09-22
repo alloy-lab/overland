@@ -104,7 +104,7 @@ const commands = {
     description: 'Start Docker development environment',
     action: () => {
       console.log('🐳 Starting Docker development environment...');
-      execSync('docker-compose -f docker-compose.dev.yml up -d', {
+      execSync('docker compose -f docker-compose.dev.yml up -d', {
         stdio: 'inherit',
       });
     },

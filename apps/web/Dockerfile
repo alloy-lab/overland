@@ -4,12 +4,12 @@ RUN corepack enable pnpm
 FROM base AS development-dependencies-env
 COPY . /app
 WORKDIR /app
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 FROM base AS production-dependencies-env
 COPY ./package.json pnpm-lock.yaml /app/
 WORKDIR /app
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --ignore-scripts --prod
 
 FROM base AS build-env
 COPY . /app/

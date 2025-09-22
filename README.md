@@ -151,7 +151,11 @@ pnpm build
 ### Docker
 
 ```bash
-docker-compose up -d
+# Development environment
+docker compose -f docker-compose.dev.yml --profile development up -d
+
+# Production environment
+docker compose up -d
 ```
 
 ### Environment Variables

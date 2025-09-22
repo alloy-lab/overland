@@ -37,7 +37,7 @@ Thank you for your interest in contributing to Overland Stack! This document pro
 
    ```bash
    # Using Docker (recommended)
-   docker-compose -f docker-compose.dev.yml up -d
+   docker compose -f docker-compose.dev.yml up -d
 
    # Or locally
    pnpm dev

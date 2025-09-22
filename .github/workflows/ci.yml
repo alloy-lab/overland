@@ -3,8 +3,40 @@ name: CI
 on:
   push:
     branches: [main, develop]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig*.json'
+      - 'vite.config.*'
+      - 'vitest.config.*'
+      - 'playwright.config.*'
+      - 'tailwind.config.*'
+      - 'next.config.*'
+      - 'docker-compose*.yml'
+      - 'Dockerfile*'
+      - '.github/workflows/**'
   pull_request:
     branches: [main, develop]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig*.json'
+      - 'vite.config.*'
+      - 'vitest.config.*'
+      - 'playwright.config.*'
+      - 'tailwind.config.*'
+      - 'next.config.*'
+      - 'docker-compose*.yml'
+      - 'Dockerfile*'
+      - '.github/workflows/**'
 
 jobs:
   test:

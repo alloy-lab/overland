@@ -59,6 +59,14 @@ class CollectionRegistry {
       const metadata = this.extractCollectionMetadata(content, file);
 
       if (metadata) {
+        // Skip Examples collection - it's for demonstration only
+        if (metadata.slug === 'examples') {
+          console.log(
+            `  ⏭️  Skipping collection: ${metadata.slug} (${metadata.displayName}) - demonstration only`
+          );
+          return;
+        }
+
         this.collections.set(metadata.slug, metadata);
         console.log(
           `  ✅ Found collection: ${metadata.slug} (${metadata.displayName})`
@@ -175,6 +183,9 @@ class CollectionRegistry {
 
     // Generate index file that exports everything
     this.generateTypesIndex();
+
+    // Clean up old type files that are no longer needed
+    this.cleanupOldTypeFiles();
 
     console.log('✅ Generated web types');
   }
@@ -529,6 +540,9 @@ export abstract class BasePayloadClient {
 
     // Generate site-settings client (global, not collection)
     this.generateSiteSettingsClient();
+
+    // Clean up old client files that are no longer needed
+    this.cleanupOldClientFiles();
   }
 
   /**
@@ -564,6 +578,66 @@ export const siteSettingsClient = new SiteSettingsClient();
 `;
 
     fs.writeFileSync(clientPath, clientContent);
+
+    // Also generate the type file for site-settings
+    this.generateSiteSettingsTypeFile();
+  }
+
+  /**
+   * Generate site-settings type file
+   */
+  generateSiteSettingsTypeFile() {
+    const typePath = path.join(
+      path.dirname(WEB_TYPES_PATH),
+      'types',
+      'site-settings.ts'
+    );
+
+    const typeContent = `/**
+ * Site Settings types
+ * Generated from Payload CMS collections
+ *
+ * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
+ */
+
+export interface SiteSettings {
+  id: string;
+  siteName?: string;
+  siteDescription?: string;
+  logo?: any;
+  favicon?: any;
+  socialMedia?: {
+    twitter?: string;
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    github?: string;
+  };
+  contactInfo?: {
+    email?: string;
+    phone?: string;
+    address?: string;
+  };
+  seo?: {
+    defaultTitle?: string;
+    defaultDescription?: string;
+    defaultKeywords?: string;
+    defaultImage?: any;
+  };
+  analytics?: {
+    googleAnalytics?: string;
+    googleTagManager?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Export for convenience
+export type SiteSettingsInput = Omit<SiteSettings, 'id' | 'createdAt' | 'updatedAt'>;
+export type SiteSettingsUpdate = Partial<SiteSettingsInput>;
+`;
+
+    fs.writeFileSync(typePath, typeContent);
   }
 
   /**
@@ -597,6 +671,71 @@ export const ${slug}Client = new ${displayName}Client();
 `;
 
     fs.writeFileSync(clientPath, clientContent);
+  }
+
+  /**
+   * Clean up old client files that are no longer needed
+   */
+  cleanupOldClientFiles() {
+    const clientsDir = path.join(path.dirname(WEB_CLIENT_PATH), 'clients');
+
+    if (!fs.existsSync(clientsDir)) {
+      return;
+    }
+
+    const clientFiles = fs
+      .readdirSync(clientsDir)
+      .filter(
+        file =>
+          file.endsWith('.ts') && file !== 'base.ts' && file !== 'index.ts'
+      );
+
+    clientFiles.forEach(file => {
+      const slug = file.replace('.ts', '');
+
+      // Skip site-settings as it's a global, not a collection
+      if (slug === 'site-settings') {
+        return;
+      }
+
+      // If this collection is not in our current collections, delete the file
+      if (!this.collections.has(slug)) {
+        const filePath = path.join(clientsDir, file);
+        fs.unlinkSync(filePath);
+        console.log(`  🗑️  Removed old client file: ${file}`);
+      }
+    });
+  }
+
+  /**
+   * Clean up old type files that are no longer needed
+   */
+  cleanupOldTypeFiles() {
+    const typesDir = path.join(path.dirname(WEB_TYPES_PATH), 'types');
+
+    if (!fs.existsSync(typesDir)) {
+      return;
+    }
+
+    const typeFiles = fs
+      .readdirSync(typesDir)
+      .filter(file => file.endsWith('.ts') && file !== 'base.ts');
+
+    typeFiles.forEach(file => {
+      const slug = file.replace('.ts', '');
+
+      // Skip site-settings as it's a global, not a collection
+      if (slug === 'site-settings') {
+        return;
+      }
+
+      // If this collection is not in our current collections, delete the file
+      if (!this.collections.has(slug)) {
+        const filePath = path.join(typesDir, file);
+        fs.unlinkSync(filePath);
+        console.log(`  🗑️  Removed old type file: ${file}`);
+      }
+    });
   }
 
   /**

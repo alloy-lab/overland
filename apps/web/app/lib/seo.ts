@@ -1,5 +1,5 @@
-import type { Pages, SiteSettings } from './types';
 import { generateStructuredData } from './structuredData';
+import type { Pages, SiteSettings } from './types';
 
 export interface SEOData {
   title: string;
@@ -35,8 +35,8 @@ export function generateSEO(
   }
 
   const seoData: SEOData = {
-    title,
-    description,
+    title: title || 'Overland Stack',
+    description: description || 'A modern web development stack',
     keywords,
     image,
     url:

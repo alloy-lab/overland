@@ -5,27 +5,50 @@
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
-import type { Media } from './base';
-
 export interface SiteSettings {
   id: string;
-  title: string;
-  description: string;
-  logo?: Media;
-  favicon?: Media;
+  title?: string;
+  description?: string;
+  siteName?: string;
+  siteDescription?: string;
+  logo?: {
+    url?: string;
+    alt?: string;
+  };
+  favicon?: any;
   social?: {
     twitter?: string;
-    github?: string;
+    facebook?: string;
+    instagram?: string;
     linkedin?: string;
+    github?: string;
+  };
+  socialMedia?: {
+    twitter?: string;
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    github?: string;
   };
   contact?: {
     email?: string;
     phone?: string;
     address?: string;
   };
+  contactInfo?: {
+    email?: string;
+    phone?: string;
+    address?: string;
+  };
+  seo?: {
+    defaultTitle?: string;
+    defaultDescription?: string;
+    defaultKeywords?: string;
+    defaultImage?: any;
+  };
   analytics?: {
-    googleAnalyticsId?: string;
-    googleTagManagerId?: string;
+    googleAnalytics?: string;
+    googleTagManager?: string;
   };
   createdAt: string;
   updatedAt: string;

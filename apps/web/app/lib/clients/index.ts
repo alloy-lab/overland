@@ -6,7 +6,6 @@
  */
 
 // Export individual clients
-export { examplesClient, ExamplesClient } from './examples';
 export { mediaClient, MediaClient } from './media';
 export { pagesClient, PagesClient } from './pages';
 export { usersClient, EmailClient } from './users';

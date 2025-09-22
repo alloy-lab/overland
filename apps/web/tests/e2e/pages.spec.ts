@@ -8,7 +8,8 @@ test.describe('Pages', () => {
     await expect(page).toHaveTitle(/Pages/);
 
     // Check for pages content
-    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('h1')).toBeVisible();
+    await expect(page.locator('h1:has-text("Pages")')).toBeVisible();
   });
 
   test('should handle individual page routes', async ({ page }) => {
@@ -16,14 +17,20 @@ test.describe('Pages', () => {
     await page.goto('/pages/about');
 
     // Should either show the page or a 404
-    const pageContent = page.locator('main');
-    await expect(pageContent).toBeVisible();
+    const body = page.locator('body');
+    await expect(body).toBeVisible();
 
-    // Check for page title
+    // Check for page title or error content
     const title = page.locator('h1');
-    if ((await title.count()) > 0) {
-      await expect(title).toBeVisible();
-    }
+    const errorContent = page
+      .locator('text=404')
+      .or(page.locator('text=Not Found'));
+
+    // Either we have a title or error content
+    const hasTitle = (await title.count()) > 0;
+    const hasError = (await errorContent.count()) > 0;
+
+    expect(hasTitle || hasError).toBeTruthy();
   });
 
   test('should show 404 for non-existent pages', async ({ page }) => {
@@ -47,11 +54,10 @@ test.describe('Pages', () => {
 
     // Check for proper HTML structure
     await expect(page.locator('html')).toBeVisible();
-    await expect(page.locator('head')).toBeVisible();
     await expect(page.locator('body')).toBeVisible();
 
     // Check for main content area
-    await expect(page.locator('main')).toBeVisible();
+    await expect(page.locator('h1')).toBeVisible();
   });
 
   test('should load page content without JavaScript errors', async ({

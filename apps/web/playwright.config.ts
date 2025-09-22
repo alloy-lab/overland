@@ -32,6 +32,9 @@ export default defineConfig({
 
     /* Record video on failure */
     video: 'retain-on-failure',
+
+    /* Run in headless mode for better performance */
+    headless: true,
   },
 
   /* Configure projects for major browsers */

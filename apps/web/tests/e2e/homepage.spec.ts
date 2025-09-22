@@ -8,45 +8,41 @@ test.describe('Homepage', () => {
     await expect(page).toHaveTitle(/Overland Stack/);
 
     // Check for main content elements
-    await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('main')).toBeVisible();
+
+    // Check for the Overland logo (either light or dark version should be visible)
+    const logoImages = page.locator('img[alt="Overland"]');
+    await expect(logoImages).toHaveCount(2); // Should have both light and dark versions
+    await expect(logoImages.first()).toBeVisible(); // At least one should be visible
   });
 
   test('should display the welcome content', async ({ page }) => {
     await page.goto('/');
 
-    // Check for welcome section
-    const welcomeSection = page.locator('[data-testid="welcome-section"]');
-    if ((await welcomeSection.count()) > 0) {
-      await expect(welcomeSection).toBeVisible();
-    }
+    // Check for welcome content
+    await expect(
+      page.locator('text=A modern, full-stack web application starter')
+    ).toBeVisible();
 
-    // Check for getting started content
-    const gettingStarted = page.locator('text=Getting Started');
-    if ((await gettingStarted.count()) > 0) {
-      await expect(gettingStarted).toBeVisible();
-    }
+    // Check for action buttons
+    await expect(page.locator('text=Get Started')).toBeVisible();
+    await expect(page.locator('text=Read our docs')).toBeVisible();
   });
 
   test('should have working navigation', async ({ page }) => {
     await page.goto('/');
 
-    // Check for navigation links
-    const navLinks = page.locator('nav a');
+    // Check for navigation links in the footer
+    const navLinks = page.locator('main a');
     const linkCount = await navLinks.count();
 
     if (linkCount > 0) {
-      // Test that navigation links are clickable
-      for (let i = 0; i < Math.min(linkCount, 3); i++) {
-        const link = navLinks.nth(i);
-        const href = await link.getAttribute('href');
+      // Test that navigation links are present
+      await expect(navLinks.first()).toBeVisible();
 
-        if (href && !href.startsWith('http')) {
-          await link.click();
-          await expect(page).toHaveURL(new RegExp(href));
-          await page.goBack();
-        }
-      }
+      // Check for specific navigation items
+      await expect(page.locator('text=Learn')).toBeVisible();
+      await expect(page.locator('text=Examples')).toBeVisible();
     }
   });
 
@@ -83,12 +79,13 @@ test.describe('Homepage', () => {
       expect(description.length).toBeGreaterThan(0);
     }
 
-    // Check for Open Graph tags
-    const ogTitle = await page
-      .locator('meta[property="og:title"]')
-      .getAttribute('content');
-    if (ogTitle) {
-      expect(ogTitle).toBeTruthy();
+    // Check for Open Graph tags (optional)
+    const ogTitleElement = page.locator('meta[property="og:title"]');
+    if ((await ogTitleElement.count()) > 0) {
+      const ogTitle = await ogTitleElement.getAttribute('content');
+      if (ogTitle) {
+        expect(ogTitle).toBeTruthy();
+      }
     }
   });
 

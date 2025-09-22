@@ -10,12 +10,12 @@ export function Welcome({ message }: { message: string }) {
           <div className='w-[500px] max-w-[100vw] p-4'>
             <img
               src={logoLight}
-              alt='React Router'
+              alt='Overland'
               className='block w-full dark:hidden'
             />
             <img
               src={logoDark}
-              alt='React Router'
+              alt='Overland'
               className='hidden w-full dark:block'
             />
           </div>

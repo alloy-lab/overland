@@ -1,6 +1,8 @@
 import compression from 'compression';
 import express from 'express';
 import morgan from 'morgan';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 // Short-circuit the type-checking of the built output.
 const BUILD_PATH = './build/server/index.js';
@@ -8,6 +10,15 @@ const DEVELOPMENT = process.env.NODE_ENV === 'development';
 const PORT = Number.parseInt(process.env.PORT || '3000');
 
 const app = express();
+
+// Get the directory name for static file serving
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Serve static assets from build/client in production
+if (!DEVELOPMENT) {
+  app.use(express.static(join(__dirname, 'build/client')));
+}
 
 if (DEVELOPMENT) {
   // Import development dependencies

@@ -41,11 +41,11 @@ check_prerequisites() {
 
     # Check Node.js
     if ! command_exists node; then
-        missing_deps+=("Node.js (18 or higher)")
+        missing_deps+=("Node.js (22 or higher)")
     else
         local node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
-        if [ "$node_version" -lt 18 ]; then
-            missing_deps+=("Node.js 18 or higher (current: $(node --version))")
+        if [ "$node_version" -lt 22 ]; then
+            missing_deps+=("Node.js 22 or higher (current: $(node --version))")
         fi
     fi
 

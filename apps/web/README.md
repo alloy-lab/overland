@@ -1,73 +1,56 @@
-# Welcome to React Router!
+# Web App
 
-A modern, production-ready template for building full-stack React applications using React Router.
+React Router v7 SSR application for the Overland Stack.
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- Server-side rendering
+- TypeScript
+- Tailwind CSS v4
+- Auto-generated API clients from CMS
+- Vitest and Playwright testing
 
-## Getting Started
-
-### Installation
-
-Install the dependencies:
+## Development
 
 ```bash
-npm install
+# Start development server
+pnpm dev
+
+# Access application
+http://localhost:3000
 ```
 
-### Development
-
-Start the development server with HMR:
+## Building
 
 ```bash
-npm run dev
+# Production build
+pnpm build
+
+# Start production server
+pnpm start
 ```
 
-Your application will be available at `http://localhost:3000`.
+## Project Structure
 
-## Building for Production
+```
+app/
+├── routes/          # React Router v7 file-based routes
+├── lib/            # Utilities and auto-generated clients
+│   ├── clients/    # API clients from CMS collections
+│   └── types/      # TypeScript types from CMS
+└── welcome/        # Welcome page components
+```
 
-Create a production build:
+## Testing
 
 ```bash
-npm run build
-```
+# Unit tests
+pnpm test:unit
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── server.js
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+# E2E tests
+pnpm test:e2e
 ```
 
 ## Styling
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+Uses Tailwind CSS v4. Customize in `tailwind.config.js` or replace with your preferred framework.

@@ -26,8 +26,8 @@ A full-stack starter with React Router v7, Payload CMS, and PostgreSQL. Ready to
 
 ## Optional features (Coming soon)
 
-- Email integration (Mailgun/Postmark)
-- Error monitoring (Sentry)
+- Email integration
+- Error monitoring
 - i18n support
 - Image optimization
 - Dark/light theme
@@ -230,6 +230,7 @@ MIT License - see [LICENSE](./LICENSE).
 
 ## Support
 
+- [Discord Community](https://discord.gg/8NeX7C7V)
 - [Payload CMS Docs](https://payloadcms.com/docs)
 - [React Router Docs](https://reactrouter.com)
 - Create GitHub issues for bugs and features

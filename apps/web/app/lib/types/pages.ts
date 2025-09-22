@@ -14,8 +14,10 @@ export interface Pages {
   excerpt?: string;
   content: any;
   featuredImage?: Media;
-  status?: 'draft' | 'published';
+  status?: 'draft' | 'scheduled' | 'published' | 'archived';
   publishedDate?: string;
+  scheduledDate?: string;
+  expirationDate?: string;
   template?: 'default' | 'full-width' | 'sidebar' | 'landing';
   showInNavigation?: boolean;
   navigationOrder?: number;

@@ -13,7 +13,6 @@ export interface StructuredDataConfig {
 
 /**
  * Generate JSON-LD structured data
- * Completely transparent - no developer configuration needed
  */
 export function generateStructuredData(config: StructuredDataConfig): string {
   const { baseUrl, siteSettings, page, breadcrumbs } = config;

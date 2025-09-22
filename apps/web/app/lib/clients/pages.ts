@@ -63,6 +63,16 @@ export class PagesClient extends BasePayloadClient {
     });
     return response.docs;
   }
+
+  /**
+   * Update a page by ID
+   */
+  async updatePage(id: string, data: Partial<Pages>): Promise<Pages> {
+    return this.fetch<Pages>(`/pages/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export const pagesClient = new PagesClient();

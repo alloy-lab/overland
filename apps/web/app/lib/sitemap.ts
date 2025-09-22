@@ -25,7 +25,6 @@ export interface SitemapConfig {
 
 /**
  * Generate sitemap URLs from Pages collection
- * Completely transparent - no developer configuration needed
  */
 export function generateSitemapUrls(
   pages: Pages[],
@@ -93,7 +92,6 @@ export function generateSitemapXML(urls: SitemapUrl[]): string {
 
 /**
  * Determine if a page should be included in sitemap
- * Transparent logic - no developer configuration needed
  */
 function shouldIncludePage(page: Pages): boolean {
   // Must have a slug

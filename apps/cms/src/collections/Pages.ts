@@ -55,8 +55,16 @@ export const Pages: CollectionConfig = {
           value: 'draft',
         },
         {
+          label: 'Scheduled',
+          value: 'scheduled',
+        },
+        {
           label: 'Published',
           value: 'published',
+        },
+        {
+          label: 'Archived',
+          value: 'archived',
         },
       ],
       defaultValue: 'draft',
@@ -72,6 +80,31 @@ export const Pages: CollectionConfig = {
         date: {
           pickerAppearance: 'dayAndTime',
         },
+        description: 'When this page was or will be published',
+      },
+    },
+    {
+      name: 'scheduledDate',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        description: 'Schedule this page to be published at a specific time',
+        condition: data => data.status === 'scheduled',
+      },
+    },
+    {
+      name: 'expirationDate',
+      type: 'date',
+      admin: {
+        position: 'sidebar',
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        description:
+          'Automatically archive this page after this date (optional)',
       },
     },
     {
@@ -174,7 +207,7 @@ export const Pages: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
-      ({ data }) => {
+      ({ data, operation, req }) => {
         // Auto-generate slug from title if not provided
         if (data.title && !data.slug) {
           data.slug = data.title
@@ -183,9 +216,48 @@ export const Pages: CollectionConfig = {
             .replace(/(^-|-$)/g, '');
         }
 
-        // Set published date when status changes to published
-        if (data.status === 'published' && !data.publishedDate) {
-          data.publishedDate = new Date().toISOString();
+        // Handle content scheduling
+        if (data.status === 'scheduled') {
+          // Validate scheduled date is in the future
+          if (
+            data.scheduledDate &&
+            new Date(data.scheduledDate) <= new Date()
+          ) {
+            throw new Error('Scheduled date must be in the future');
+          }
+
+          // Set published date to scheduled date
+          if (data.scheduledDate) {
+            data.publishedDate = data.scheduledDate;
+          }
+        } else if (data.status === 'published') {
+          // Set published date when status changes to published
+          if (!data.publishedDate) {
+            data.publishedDate = new Date().toISOString();
+          }
+
+          // Clear scheduled date when publishing
+          data.scheduledDate = null;
+        }
+
+        // Handle expiration
+        if (
+          data.expirationDate &&
+          new Date(data.expirationDate) <= new Date()
+        ) {
+          data.status = 'archived';
+        }
+      },
+    ],
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        // Log content scheduling events
+        if (doc.status === 'scheduled' && doc.scheduledDate) {
+          console.log(`Page "${doc.title}" scheduled for ${doc.scheduledDate}`);
+        }
+
+        if (doc.status === 'published' && operation === 'update') {
+          console.log(`Page "${doc.title}" published`);
         }
       },
     ],

@@ -1,6 +1,6 @@
+import { generateStructuredData } from '~/lib/structuredData';
 import type { Pages } from '~/lib/types/pages';
 import type { SiteSettings } from '~/lib/types/site-settings';
-import { generateStructuredData } from '~/lib/structuredData';
 
 interface StructuredDataProps {
   baseUrl: string;
@@ -14,7 +14,6 @@ interface StructuredDataProps {
 
 /**
  * StructuredData component for injecting JSON-LD into pages
- * Completely transparent - automatically generates from CMS data
  */
 export function StructuredData({
   baseUrl,

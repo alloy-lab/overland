@@ -6,6 +6,7 @@
  */
 
 import {
+  examplesClient,
   mediaClient,
   pagesClient,
   siteSettingsClient,
@@ -13,10 +14,21 @@ import {
 } from './clients';
 
 // Re-export all clients for convenience
-export { mediaClient, pagesClient, siteSettingsClient, usersClient };
+export {
+  examplesClient,
+  mediaClient,
+  pagesClient,
+  siteSettingsClient,
+  usersClient,
+};
 
 // Legacy compatibility - main client object
 export const payloadClient = {
+  // Examples
+  getExampleses: examplesClient.getExampleses.bind(examplesClient),
+  getPublishedExampleses:
+    examplesClient.getPublishedExampleses.bind(examplesClient),
+
   // Media
   getMedia: mediaClient.getMedia.bind(mediaClient),
 

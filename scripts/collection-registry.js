@@ -1070,10 +1070,11 @@ export default function ${displayName}Detail({ loaderData }: { loaderData: { ${s
   }
 
   pluralize(str) {
-    // Handle special cases
+    // Handle special cases - words that are already plural or have irregular plurals
     if (str === 'Media') return 'Media';
     if (str === 'Pages') return 'Pages';
     if (str === 'Users') return 'Users';
+    if (str === 'Examples') return 'Examples'; // Already plural
 
     // Standard pluralization
     if (str.endsWith('y')) {

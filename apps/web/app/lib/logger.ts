@@ -1,7 +1,7 @@
 import pino from 'pino';
 
 // Check if we're in a browser environment
-const isBrowser = typeof window !== 'undefined';
+const isBrowser = typeof globalThis !== 'undefined' && 'window' in globalThis;
 
 // Create logger instance
 const logger = isBrowser

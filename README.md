@@ -98,8 +98,9 @@ git clone <your-repo-url>
 cd overland-stack
 cp env.example .env
 
-# Edit .env with your configuration
-# Set PAYLOAD_SECRET to a secure random string
+# Generate a secure PAYLOAD_SECRET
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# Copy the output and update PAYLOAD_SECRET in .env
 
 # Install and start
 pnpm install

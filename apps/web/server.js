@@ -21,50 +21,17 @@ if (!DEVELOPMENT) {
 }
 
 if (DEVELOPMENT) {
-  // Import development dependencies
-  const { env } = await import('./app/lib/envValidation.js');
-  const { expressErrorHandler } = await import('./app/lib/errorHandler.js');
-  const logger = (await import('./app/lib/logger.js')).default;
-  const {
-    apiSecurity,
-    authSecurity,
-    formSecurity,
-    requestSizeLimit,
-    staticSecurity,
-  } = await import('./app/lib/security.js');
+  // In development, use Vite dev server
+  console.log('Starting development server with Vite...');
+  const { createServer } = await import('vite');
 
-  // Trust proxy for accurate IP addresses
-  app.set('trust proxy', 1);
+  const viteDevServer = await createServer({
+    server: { middlewareMode: true },
+  });
 
-  // Security middleware
-  app.disable('x-powered-by');
-  app.use(compression());
-  app.use(requestSizeLimit('10MB'));
-
-  // Apply security middleware based on environment
-  if (env.ENABLE_CORS) {
-    app.use(apiSecurity);
-  }
-
-  // Static file security
-  app.use(staticSecurity);
-
-  // Request logging
-  app.use(
-    morgan('combined', {
-      stream: {
-        write: message => logger.info(message.trim()),
-      },
-    })
-  );
-
-  logger.info('Starting development server');
-  const viteDevServer = await import('vite').then(vite =>
-    vite.createServer({
-      server: { middlewareMode: true },
-    })
-  );
   app.use(viteDevServer.middlewares);
+
+  // Handle SSR
   app.use(async (req, res, next) => {
     try {
       const source = await viteDevServer.ssrLoadModule('./server/app.ts');
@@ -76,14 +43,6 @@ if (DEVELOPMENT) {
       next(error);
     }
   });
-
-  // API routes with security middleware
-  app.use('/api', apiSecurity);
-  app.use('/api/auth', authSecurity);
-  app.use('/api/forms', formSecurity);
-
-  // Global error handler (must be last)
-  app.use(expressErrorHandler);
 } else {
   // In production, use the built server directly
   const builtServer = await import(BUILD_PATH);

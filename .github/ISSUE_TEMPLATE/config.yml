@@ -1,0 +1,20 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/alloylab/overland/discussions
+    about: Ask questions, share ideas, and discuss the project with the community
+  - name: 📖 Documentation
+    url: https://github.com/alloylab/overland#readme
+    about: Check our comprehensive documentation and setup guides
+  - name: 🐛 Bug Report
+    url: https://github.com/alloylab/overland/issues/new?template=bug_report.yml
+    about: Report a bug or unexpected behavior
+  - name: ✨ Feature Request
+    url: https://github.com/alloylab/overland/issues/new?template=feature_request.yml
+    about: Suggest a new feature or enhancement
+  - name: 📚 Documentation Issue
+    url: https://github.com/alloylab/overland/issues/new?template=documentation.yml
+    about: Report missing, unclear, or incorrect documentation
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/alloylab/overland/issues/new?template=security.yml
+    about: Report a security vulnerability (please email security@alloylab.net instead)

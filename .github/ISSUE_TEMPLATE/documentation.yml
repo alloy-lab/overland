@@ -1,0 +1,93 @@
+name: 📚 Documentation
+description: Report missing, unclear, or incorrect documentation
+title: '[Docs]: '
+labels: ['documentation', 'needs-triage']
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation! Please provide details about what documentation needs to be updated.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation issue is this?
+      options:
+        - README
+        - CONTRIBUTING.md
+        - SECURITY.md
+        - API Documentation
+        - Code Comments
+        - Setup Instructions
+        - Deployment Guide
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation problem.
+      placeholder: What's wrong with the documentation?
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-docs
+    attributes:
+      label: Current Documentation
+      description: What does the current documentation say? (if applicable)
+      placeholder: Quote or describe the current documentation...
+
+  - type: textarea
+    id: expected-docs
+    attributes:
+      label: Expected Documentation
+      description: What should the documentation say instead?
+      placeholder: Describe what the documentation should say...
+
+  - type: input
+    id: file-location
+    attributes:
+      label: File Location
+      description: Which file(s) need to be updated?
+      placeholder: e.g., README.md, CONTRIBUTING.md, apps/web/README.md
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this documentation fix?
+      options:
+        - Low - Minor clarification
+        - Medium - Important for understanding
+        - High - Blocking users from getting started
+        - Critical - Incorrect information that could cause problems
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the documentation issue here.
+      placeholder: Any additional information that might be helpful...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided all the information requested above
+          required: true
+        - label: I am willing to help improve the documentation if needed
+          required: false

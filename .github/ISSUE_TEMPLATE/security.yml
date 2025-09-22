@@ -1,0 +1,91 @@
+name: 🔒 Security Vulnerability
+description: Report a security vulnerability
+title: '[Security]: '
+labels: ['security', 'needs-triage']
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **⚠️ IMPORTANT: Please do not post security vulnerabilities publicly.**
+
+        If you believe you have found a security vulnerability, please follow responsible disclosure practices:
+        1. **DO NOT** create a public issue
+        2. **DO NOT** post details in public channels
+        3. **DO** email security details to: security@alloylab.net
+        4. **DO** include as much detail as possible about the vulnerability
+
+        For non-security issues, please use the regular bug report template instead.
+
+  - type: textarea
+    id: vulnerability-type
+    attributes:
+      label: Vulnerability Type
+      description: What type of security issue is this?
+      placeholder: e.g., XSS, CSRF, SQL Injection, Authentication bypass, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-components
+    attributes:
+      label: Affected Components
+      description: Which parts of the application are affected?
+      placeholder: e.g., CMS admin panel, API endpoints, file upload, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: severity
+    attributes:
+      label: Severity Assessment
+      description: How severe do you consider this vulnerability?
+      placeholder: e.g., Low, Medium, High, Critical
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can this vulnerability be reproduced?
+      placeholder: Provide detailed steps (be careful not to expose sensitive information)
+    validations:
+      required: true
+
+  - type: textarea
+    id: potential-impact
+    attributes:
+      label: Potential Impact
+      description: What could an attacker do with this vulnerability?
+      placeholder: Describe the potential impact...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: Do you have any suggestions for how to fix this?
+      placeholder: If you have ideas for a fix, please share them...
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information about the security issue.
+      placeholder: Additional context...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Security Checklist
+      description: Please confirm the following
+      options:
+        - label: I understand this is a security issue and should not be discussed publicly
+          required: true
+        - label: I have provided sufficient detail for the security team to investigate
+          required: true
+        - label: I am willing to work with the security team on responsible disclosure
+          required: true

@@ -6,11 +6,10 @@
  */
 
 // Export individual clients
-export { examplesClient, ExamplesClient } from './examples';
-export { mediaClient, MediaClient } from './media';
-export { pagesClient, PagesClient } from './pages';
-export { usersClient, EmailClient } from './users';
-export { siteSettingsClient, SiteSettingsClient } from './site-settings';
+export { MediaClient, mediaClient } from './media';
+export { PagesClient, pagesClient } from './pages';
+export { SiteSettingsClient, siteSettingsClient } from './site-settings';
+export { EmailClient, usersClient } from './users';
 
 // Export base client
 export { BasePayloadClient } from './base';

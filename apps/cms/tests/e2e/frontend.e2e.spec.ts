@@ -9,18 +9,16 @@ test.describe('Frontend', () => {
   });
 
   test('can go on homepage', async ({ page }) => {
-    await page.goto('http://localhost:3000');
+    await page.goto('/');
 
-    await expect(page).toHaveTitle(/Overland Stack/);
-
-    // Check for the main description text
-    const description = page.locator('p').first();
-    await expect(description).toContainText(
-      'A modern, full-stack web application starter'
+    // Check for the welcome message
+    const welcomeMessage = page.locator('h1');
+    await expect(welcomeMessage).toContainText(
+      'Welcome to your new Overland project'
     );
 
-    // Check for the "Get Started" button
-    const getStartedButton = page.locator('text=Get Started');
-    await expect(getStartedButton).toBeVisible();
+    // Check for the admin panel link
+    const adminLink = page.locator('text=Go to admin panel');
+    await expect(adminLink).toBeVisible();
   });
 });

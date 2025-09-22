@@ -6,13 +6,14 @@
   <img src="./apps/web/app/welcome/logo-dark.svg#gh-dark-mode-only" alt="Overland Stack" width="400" style="max-width: 100%; height: auto;" />
 </div>
 
+**The modern full-stack starter that gets you shipping faster.** React Router v7 + Payload CMS + PostgreSQL, with zero configuration overhead and production-ready deployment.
+
 <div align="center">
 
 [![CI](https://github.com/alloy-lab/overland/actions/workflows/ci.yml/badge.svg)](https://github.com/alloy-lab/overland/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
-
-**The modern full-stack starter that gets you shipping faster.** React Router v7 + Payload CMS + PostgreSQL, with zero configuration overhead and production-ready deployment.
 
 ## Why this stack?
 

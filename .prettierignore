@@ -13,6 +13,7 @@ build/
 payload-types.ts
 generated-schema.graphql
 **/.react-router/types/**
+**/importMap.js
 
 # Environment files
 .env

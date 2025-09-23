@@ -208,8 +208,8 @@ importers:
   .:
     dependencies:
       '@alloylab/collection-registry':
-        specifier: link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry
-        version: link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry
+        specifier: ^1.0.0
+        version: 1.0.0(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -507,6 +507,13 @@ packages:
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
+
+  '@alloylab/collection-registry@1.0.0':
+    resolution: {integrity: sha512-kFXSs6O8xX+QN9KzxxMAJN/m8dgawsRqBKx9snL1QZpfJQCj8obhDQI1rf3z6qVh+ZhPywmrFn1/uVYaSlRKlQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      payload: ^3.0.0
 
   '@apidevtools/json-schema-ref-parser@11.9.3':
     resolution: {integrity: sha512-60vepv88RwcJtSHrD6MjIL6Ta3SOYbgfnkHb+ppAVK+o9mXprRtulx7VlRl3lN3bbvysAfCS7WMVfhUYemB0IQ==}
@@ -6035,6 +6042,11 @@ packages:
 snapshots:
 
   '@adobe/css-tools@4.4.4': {}
+
+  '@alloylab/collection-registry@1.0.0(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))':
+    dependencies:
+      payload: 3.56.0(graphql@16.11.0)(typescript@5.9.2)
+      prettier: 3.6.2
 
   '@apidevtools/json-schema-ref-parser@11.9.3':
     dependencies:

@@ -196,6 +196,29 @@ PAYLOAD_PUBLIC_CMS_URL=https://your-domain.com/admin
 2. Add to `payload.config.ts`
 3. Run `pnpm generate:types`
 
+### Collection Registry Package
+
+The template uses the `@alloylab/collection-registry` package to automatically generate TypeScript types, API client methods, and React Router route files from your Payload CMS collections.
+
+#### For Template Users (Published Package)
+
+By default, the template references the published npm package:
+
+```json
+{
+  "dependencies": {
+    "@alloylab/collection-registry": "^1.0.0"
+  }
+}
+```
+
+The collection registry automatically:
+
+- Scans your Payload collections
+- Generates TypeScript types in `apps/web/app/lib/types/`
+- Creates API client methods in `apps/web/app/lib/clients/`
+- Generates React Router route files in `apps/web/app/lib/routes/`
+
 ### Adding Routes
 
 Create route files in `apps/web/app/routes/` (React Router v7 file-based routing).

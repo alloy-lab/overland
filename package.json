@@ -80,6 +80,6 @@
     }
   },
   "dependencies": {
-    "@alloylab/collection-registry": "link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry"
+    "@alloylab/collection-registry": "^1.0.0"
   }
 }

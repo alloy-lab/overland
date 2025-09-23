@@ -1,5 +1,5 @@
 {
-  "name": "overland-stack",
+  "name": "overland",
   "version": "1.0.0",
   "description": "Production-ready template pairing React Router SSR with Payload CMS",
   "private": true,

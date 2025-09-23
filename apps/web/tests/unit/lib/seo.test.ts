@@ -11,8 +11,7 @@ describe('SEO Utilities', () => {
       alt: 'Overland Stack Logo',
     },
     social: {
-      twitter: '@overlandstack',
-      facebook: 'overlandstack',
+      twitter: '@alloylab',
     },
     seo: {
       title: 'Overland Stack - Modern Full-Stack App',

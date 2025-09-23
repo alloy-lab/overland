@@ -16,8 +16,8 @@ Thank you for your interest in contributing to Overland Stack! This document pro
 1. **Fork and Clone**
 
    ```bash
-   git clone https://github.com/your-username/overland-stack.git
-   cd overland-stack
+   git clone https://github.com/your-username/overland.git
+   cd overland
    ```
 
 2. **Install Dependencies**

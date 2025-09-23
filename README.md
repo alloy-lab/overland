@@ -36,7 +36,7 @@ A full-stack starter with React Router v7, Payload CMS, and PostgreSQL. Ready to
 ## 📁 Project Structure
 
 ```
-overland-stack/
+overland/
 ├── apps/
 │   ├── cms/                 # Payload CMS application
 │   │   ├── src/
@@ -95,7 +95,7 @@ overland-stack/
 ```bash
 # Clone and setup
 git clone <your-repo-url>
-cd overland-stack
+cd overland
 cp env.example .env
 
 # Generate a secure PAYLOAD_SECRET

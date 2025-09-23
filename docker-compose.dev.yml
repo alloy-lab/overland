@@ -53,9 +53,16 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./apps/cms:/app/apps/cms
+      # Mount source code for live reloading (excluding node_modules)
+      - ./apps/cms/src:/app/apps/cms/src
+      - ./apps/cms/public:/app/apps/cms/public
+      - ./apps/cms/next.config.mjs:/app/apps/cms/next.config.mjs
+      - ./apps/cms/tsconfig.json:/app/apps/cms/tsconfig.json
+      - ./apps/cms/package.json:/app/apps/cms/package.json
+      - ./apps/cms/next-env.d.ts:/app/apps/cms/next-env.d.ts
+      # Preserve uploads and node_modules
       - cms_uploads_dev:/app/apps/cms/uploads
-      - /app/node_modules
+      - cms_node_modules:/app/apps/cms/node_modules
     command: pnpm --filter cms dev
     healthcheck:
       test: ['CMD-SHELL', 'curl -f http://localhost:3001/admin || exit 1']
@@ -68,6 +75,8 @@ volumes:
   postgres_data_dev:
     driver: local
   cms_uploads_dev:
+    driver: local
+  cms_node_modules:
     driver: local
 
 networks:

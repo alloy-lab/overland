@@ -75,7 +75,7 @@ body:
     attributes:
       label: Operating System
       description: What operating system are you using?
-      placeholder: e.g., macOS 14.0, Windows 11, Ubuntu 22.04
+      placeholder: e.g., macOS 14.0, Windows 11, Ubuntu 24.8.0
     validations:
       required: true
 

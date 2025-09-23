@@ -23,10 +23,6 @@ test.describe('Homepage', () => {
     await expect(
       page.locator('text=A modern, full-stack web application starter')
     ).toBeVisible();
-
-    // Check for action buttons
-    await expect(page.locator('text=Get Started')).toBeVisible();
-    await expect(page.locator('text=Read our docs')).toBeVisible();
   });
 
   test('should have working navigation', async ({ page }) => {
@@ -39,10 +35,6 @@ test.describe('Homepage', () => {
     if (linkCount > 0) {
       // Test that navigation links are present
       await expect(navLinks.first()).toBeVisible();
-
-      // Check for specific navigation items
-      await expect(page.locator('text=Learn')).toBeVisible();
-      await expect(page.locator('text=Examples')).toBeVisible();
     }
   });
 

@@ -1,81 +1,59 @@
+import * as Sentry from '@sentry/react';
 import { useEffect, useState } from 'react';
 import { usePerformanceMonitoring } from '~/lib/performance';
-import * as Sentry from '@sentry/react';
 
 interface DevToolsProps {
   enabled?: boolean;
 }
 
-type DevToolTab = 'performance' | 'errors' | 'network' | 'info';
+type DevToolView = 'main' | 'settings';
 
 export function DevTools({
   enabled = process.env.NODE_ENV === 'development',
 }: DevToolsProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<DevToolTab>('performance');
+  const [currentView, setCurrentView] = useState<DevToolView>('main');
   const [metrics, setMetrics] = useState<any[]>([]);
-  const [errors, setErrors] = useState<any[]>([]);
   const analytics = usePerformanceMonitoring();
 
   useEffect(() => {
-    if (!enabled || !analytics) return;
+    if (!enabled) return;
+
+    // Add some initial test data for demonstration
+    setMetrics([
+      { name: 'FCP', value: 1200, timestamp: Date.now() - 1000 },
+      { name: 'LCP', value: 2100, timestamp: Date.now() - 2000 },
+      { name: 'CLS', value: 0.05, timestamp: Date.now() - 3000 },
+    ]);
 
     // Listen for custom performance events
     const handlePerformanceEvent = (event: CustomEvent) => {
       setMetrics(prev => [event.detail, ...prev].slice(0, 10));
     };
 
-    // Listen for error events
-    const handleErrorEvent = (event: CustomEvent) => {
-      setErrors(prev => [event.detail, ...prev].slice(0, 10));
-    };
-
-    // Listen for global errors
-    const handleGlobalError = (event: ErrorEvent) => {
-      setErrors(prev =>
-        [
-          {
-            type: 'JavaScript Error',
-            message: event.message,
-            filename: event.filename,
-            lineno: event.lineno,
-            colno: event.colno,
-            timestamp: new Date().toISOString(),
-          },
-          ...prev,
-        ].slice(0, 10)
-      );
-    };
-
     window.addEventListener(
       'performance-metric',
       handlePerformanceEvent as EventListener
     );
-    window.addEventListener(
-      'dev-tools-error',
-      handleErrorEvent as EventListener
-    );
-    window.addEventListener('error', handleGlobalError);
 
-    // Initialize Sentry breadcrumb (silent)
-    Sentry.addBreadcrumb({
-      message: 'Dev Tools initialized',
-      level: 'info',
-      data: { component: 'DevTools' },
-    });
+    // Initialize Sentry breadcrumb (silent) - only if Sentry is available
+    try {
+      Sentry.addBreadcrumb({
+        message: 'Dev Tools initialized',
+        level: 'info',
+        data: { component: 'DevTools' },
+      });
+    } catch (error) {
+      // Sentry not available, continue without it
+    }
 
     return () => {
       window.removeEventListener(
         'performance-metric',
         handlePerformanceEvent as EventListener
       );
-      window.removeEventListener(
-        'dev-tools-error',
-        handleErrorEvent as EventListener
-      );
-      window.removeEventListener('error', handleGlobalError);
     };
-  }, [enabled, analytics]);
+  }, [enabled]);
 
   if (!enabled) return null;
 
@@ -108,113 +86,123 @@ export function DevTools({
     return value > budget ? 'text-red-600' : 'text-green-600';
   };
 
-  const tabs = [
-    { id: 'performance' as const, label: 'Perf', icon: '📊' },
-    { id: 'errors' as const, label: 'Errors', icon: '🚨' },
-    { id: 'network' as const, label: 'Network', icon: '🌐' },
-    { id: 'info' as const, label: 'Info', icon: 'ℹ️' },
-  ];
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'performance':
-        return (
-          <div className='space-y-3'>
-            {metrics.length > 0 ? (
-              <div className='space-y-1 max-h-32 overflow-y-auto'>
-                {metrics.map((metric, index) => (
-                  <div
-                    key={index}
-                    className='text-xs border-l-2 border-gray-200 pl-2'
-                  >
-                    <div className='flex justify-between items-center'>
-                      <span className='font-mono text-gray-600'>
-                        {metric.name}
-                      </span>
-                      <span
-                        className={`font-semibold ${getStatusColor(metric.name, metric.value)}`}
-                      >
-                        {formatValue(metric.value, metric.name)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className='text-gray-500 text-center py-2 text-xs'>
-                No metrics yet
-              </div>
-            )}
+  const renderMainView = () => (
+    <div className='space-y-3'>
+      {/* Web Vitals in a single row */}
+      <div className='flex items-center space-x-4'>
+        {metrics.slice(0, 4).map((metric, index) => (
+          <div key={index} className='flex items-center space-x-1'>
+            <span className='text-xs text-gray-500 font-mono'>
+              {metric.name}:
+            </span>
+            <span
+              className={`text-xs font-semibold ${getStatusColor(metric.name, metric.value)}`}
+            >
+              {formatValue(metric.value, metric.name)}
+            </span>
           </div>
-        );
+        ))}
+      </div>
 
-      case 'errors':
-        return (
-          <div className='space-y-3'>
-            {errors.length > 0 ? (
-              <div className='space-y-1 max-h-32 overflow-y-auto'>
-                {errors.map((error, index) => (
-                  <div
-                    key={index}
-                    className='text-xs border-l-2 border-red-200 pl-2'
-                  >
-                    <div className='font-mono text-red-600'>
-                      {error.type || 'Error'}
-                    </div>
-                    <div className='text-gray-500 truncate'>
-                      {error.message}
-                    </div>
-                    {error.filename && (
-                      <div className='text-gray-400 text-xs'>
-                        {error.filename}:{error.lineno}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className='text-gray-500 text-center py-2 text-xs'>
-                No errors detected
-              </div>
-            )}
-          </div>
-        );
+      {/* Settings button on its own row */}
+      <button
+        onClick={() => setCurrentView('settings')}
+        className='w-full flex items-center justify-center space-x-2 px-3 py-2 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors'
+      >
+        <svg
+          className='w-4 h-4'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z'
+          />
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            strokeWidth={2}
+            d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+          />
+        </svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  );
 
-      case 'network':
-        return (
-          <div className='space-y-3'>
-            <div className='text-gray-500 text-center py-2 text-xs'>
-              Network monitoring coming soon
-            </div>
-          </div>
-        );
+  const renderSettingsView = () => (
+    <div className='space-y-3'>
+      <div className='flex items-center space-x-2'>
+        <button
+          onClick={() => setCurrentView('main')}
+          className='text-gray-500 hover:text-gray-700'
+        >
+          <svg
+            className='w-4 h-4'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M15 19l-7-7 7-7'
+            />
+          </svg>
+        </button>
+        <h3 className='font-semibold text-gray-800 text-sm'>Settings</h3>
+      </div>
 
-      case 'info':
-        return (
-          <div className='space-y-3'>
-            <div className='space-y-1 text-xs'>
-              <div className='flex justify-between'>
-                <span className='text-gray-500'>Environment:</span>
-                <span className='font-mono'>{import.meta.env.MODE}</span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-500'>Sentry:</span>
-                <span className='font-mono'>
-                  {import.meta.env.VITE_SENTRY_DSN ? 'Enabled' : 'Disabled'}
-                </span>
-              </div>
-              <div className='flex justify-between'>
-                <span className='text-gray-500'>React Router:</span>
-                <span className='font-mono'>v7</span>
-              </div>
-            </div>
-          </div>
-        );
+      <div className='space-y-2 text-xs'>
+        <div className='flex justify-between items-center'>
+          <span className='text-gray-600'>Current Route:</span>
+          <span className='font-mono text-gray-800'>
+            {window.location.pathname}
+          </span>
+        </div>
+        <div className='flex justify-between items-center'>
+          <span className='text-gray-600'>React Router:</span>
+          <span className='font-mono text-gray-800'>v7</span>
+        </div>
+        <div className='flex justify-between items-center'>
+          <span className='text-gray-600'>Environment:</span>
+          <span className='font-mono text-gray-800'>
+            {import.meta.env.MODE}
+          </span>
+        </div>
+      </div>
 
-      default:
-        return null;
-    }
-  };
+      <div className='pt-2 border-t border-gray-200 space-y-2'>
+        <button
+          onClick={() => {
+            // Restart dev server functionality
+            window.location.reload();
+          }}
+          className='w-full px-3 py-2 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors'
+        >
+          Restart Dev Server
+        </button>
+        <button
+          onClick={() => {
+            // Clear cache functionality
+            if ('caches' in window) {
+              caches.keys().then(names => {
+                names.forEach(name => caches.delete(name));
+              });
+            }
+            window.location.reload();
+          }}
+          className='w-full px-3 py-2 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200 transition-colors'
+        >
+          Clear Cache & Reload
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -253,26 +241,10 @@ export function DevTools({
             </button>
           </div>
 
-          {/* Tabs */}
-          <div className='flex border-b border-gray-200'>
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-2 py-1 text-xs font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-600'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <span className='mr-1'>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
           {/* Content */}
-          <div className='p-3'>{renderTabContent()}</div>
+          <div className='p-3'>
+            {currentView === 'main' ? renderMainView() : renderSettingsView()}
+          </div>
         </div>
       )}
     </>

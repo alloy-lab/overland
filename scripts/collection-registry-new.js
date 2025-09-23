@@ -29,6 +29,7 @@ async function run() {
   try {
     const registry = new CollectionRegistry(config);
     await registry.generate();
+    console.log('\n🎉 Collection Registry generation complete!');
   } catch (error) {
     console.error('❌ Error running collection registry:', error.message);
     process.exit(1);

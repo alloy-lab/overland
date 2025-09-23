@@ -206,6 +206,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      '@alloylab/collection-registry':
+        specifier: link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry
+        version: link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry
     devDependencies:
       '@types/node':
         specifier: 'catalog:'

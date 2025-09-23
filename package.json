@@ -78,5 +78,8 @@
       "react": "19.1.0",
       "react-dom": "19.1.0"
     }
+  },
+  "dependencies": {
+    "@alloylab/collection-registry": "link:../../../../.local/share/pnpm/global/5/node_modules/@alloylab/collection-registry"
   }
 }

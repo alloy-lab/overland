@@ -2,7 +2,7 @@
  * Base types for web app
  * Generated from Payload CMS collections
  *
- * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
+ * DO NOT EDIT MANUALLY - Run collection-registry to regenerate
  */
 
 // Base response type

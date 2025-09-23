@@ -70,6 +70,18 @@ You are working with the Overland Stack, a production-ready full-stack starter w
 - Use the Lefthook pre-commit hooks
 - Ensure all code passes type checking
 
+### Commit Messages
+
+- **ALWAYS use conventional commits format**: `<type>(<scope>): <description>`
+- **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `build`, `revert`
+- **Scopes**: `cms`, `web`, `ui`, `scripts`, `deps`, `config`, `ci`, `docs`
+- **Examples**:
+  - `feat(cms): add new collection type`
+  - `fix(web): resolve routing issue`
+  - `docs(readme): update installation guide`
+  - `chore(deps): update dependencies`
+- **Breaking changes**: Use `feat!(scope):` or include `BREAKING CHANGE:` in footer
+
 ## Common Patterns
 
 ### Creating a New Collection

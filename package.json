@@ -58,6 +58,21 @@
       "lefthook",
       "sharp",
       "unrs-resolver"
-    ]
+    ],
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "react",
+        "react-dom"
+      ],
+      "allowedVersions": {
+        "react": "19",
+        "react-dom": "19"
+      }
+    },
+    "allowedDeprecatedVersions": {
+      "@types/winston": "*",
+      "@esbuild-kit/core-utils": "*",
+      "@esbuild-kit/esm-loader": "*"
+    }
   }
 }

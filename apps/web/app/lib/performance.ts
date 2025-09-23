@@ -1,58 +1,63 @@
-import { getCLS, getFCP, getFID, getLCP, getTTFB } from 'web-vitals';
+import * as Sentry from '@sentry/react';
 
-// TypeScript declaration for window
-declare const window: any;
+// Performance monitoring with Sentry
+export const initPerformanceMonitoring = () => {
+  if (typeof globalThis === 'undefined' || !('window' in globalThis)) return;
 
-// Web Vitals monitoring
-export const initWebVitals = () => {
-  if (typeof window === 'undefined') return;
+  // Sentry automatically captures Web Vitals (LCP, CLS, INP, FCP, FID, TTFB)
+  // No additional setup needed - they're captured by the BrowserTracing integration
 
-  // Send to Vercel Analytics via global function
-  const sendToAnalytics = (metric: any) => {
-    if (typeof window !== 'undefined' && (window as any).va) {
-      (window as any).va('track', metric.name, { value: metric.value });
-    }
-  };
-
-  getCLS(sendToAnalytics);
-  getFID(sendToAnalytics);
-  getFCP(sendToAnalytics);
-  getLCP(sendToAnalytics);
-  getTTFB(sendToAnalytics);
-
-  // Also log to console in development
-  if (process.env.NODE_ENV === 'development') {
-    getCLS(console.log);
-    getFID(console.log);
-    getFCP(console.log);
-    getLCP(console.log);
-    getTTFB(console.log);
-  }
+  // Sentry automatically handles Web Vitals - no console logging needed
 };
 
 // Performance monitoring hook
 export const usePerformanceMonitoring = () => {
-  if (typeof window === 'undefined') return null;
+  if (typeof globalThis === 'undefined' || !('window' in globalThis))
+    return null;
 
-  // Initialize web vitals monitoring
-  initWebVitals();
+  // Initialize performance monitoring
+  initPerformanceMonitoring();
 
-  // Return analytics functions for custom tracking
+  // Return Sentry-based analytics functions
   return {
-    track: (name: string, value: number) => {
-      if (typeof window !== 'undefined' && (window as any).va) {
-        (window as any).va('track', name, { value });
-      }
+    // Track custom performance metrics
+    track: (name: string, value: number, tags?: Record<string, string>) => {
+      Sentry.addBreadcrumb({
+        message: `Performance metric: ${name}`,
+        level: 'info',
+        data: { value, ...tags },
+      });
+
+      // Also send as a custom measurement
+      Sentry.setMeasurement(name, value, 'millisecond');
     },
-    page: (name: string) => {
-      if (typeof window !== 'undefined' && (window as any).va) {
-        (window as any).va('page', name);
+
+    // Track page views
+    page: (name: string, tags?: Record<string, string>) => {
+      Sentry.addBreadcrumb({
+        message: `Page view: ${name}`,
+        level: 'info',
+        data: tags,
+      });
+    },
+
+    // Start a custom transaction
+    startTransaction: (name: string, op: string = 'navigation') => {
+      return Sentry.startTransaction({ name, op });
+    },
+
+    // Add custom span to current transaction
+    addSpan: (description: string, op: string = 'custom') => {
+      const transaction = Sentry.getCurrentHub().getScope()?.getTransaction();
+      if (transaction) {
+        return transaction.startChild({ description, op });
       }
+      return null;
     },
   };
 };
 
-// Simple performance budget checker
+// Simple performance budget checker (silent - only used for UI indicators)
 export const checkPerformanceBudget = (metric: any) => {
   const budgets = {
     CLS: 0.1,
@@ -64,10 +69,8 @@ export const checkPerformanceBudget = (metric: any) => {
 
   const budget = budgets[metric.name as keyof typeof budgets];
   if (budget && metric.value > budget) {
-    console.warn(`Performance budget exceeded for ${metric.name}:`, {
-      value: metric.value,
-      budget,
-      delta: metric.value - budget,
-    });
+    // Budget exceeded - this is handled by the UI color coding
+    return { exceeded: true, budget, delta: metric.value - budget };
   }
+  return { exceeded: false };
 };

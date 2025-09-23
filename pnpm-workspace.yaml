@@ -28,8 +28,7 @@ catalog:
   '@types/winston': ^2.4.4
   '@vitejs/plugin-react': 4.5.2
   '@vitest/ui': 3.2.4
-  '@vercel/analytics': ^1.0.0
-  '@sentry/nextjs': ^7.0.0
+  '@sentry/react': ^7.0.0
   '@tanstack/react-virtual': ^3.0.0
   '@react-hookz/web': ^25.0.0
   '@headlessui/react': ^1.7.0
@@ -37,7 +36,6 @@ catalog:
   '@types/react-lazy-load-image-component': ^1.6.0
   'use-debounce': ^10.0.0
   'use-throttle-callback': ^1.0.0
-  'web-vitals': ^3.5.0
   'pino': ^8.0.0
   'pino-pretty': ^10.0.0
   compression: ^1.7.5

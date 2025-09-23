@@ -34,8 +34,8 @@ export const usePerformanceMonitoring = () => {
 export const analyzeBundle = (): void => {
   if (process.env.NODE_ENV !== 'development') return;
 
-  console.log('Bundle analysis available in development mode');
-  console.log('Consider running: npm run analyze to view bundle composition');
+  // Bundle analysis available in development mode
+  // Consider running: npm run analyze to view bundle composition
 };
 
 // Memory usage monitoring

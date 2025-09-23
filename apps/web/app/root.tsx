@@ -9,9 +9,12 @@ import {
 
 import type { Route } from './+types/root';
 import './app.css';
-import { PerformanceMonitor } from './components/PerformanceMonitor';
+import { DevTools } from './components/PerformanceMonitor';
 import { ErrorBoundary as AppErrorBoundary } from './lib/ErrorBoundary';
 import logger from './lib/logger';
+
+// Initialize Sentry for React Router v7
+import './lib/errorHandler';
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -37,7 +40,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <AppErrorBoundary>{children}</AppErrorBoundary>
-        <PerformanceMonitor />
+        <DevTools />
         <ScrollRestoration />
         <Scripts />
       </body>

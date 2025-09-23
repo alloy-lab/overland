@@ -42,6 +42,9 @@ const envSchema = z.object({
   // Logging
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
 
+  // Sentry (optional)
+  SENTRY_DSN: z.string().url().optional(),
+
   // File uploads
   MAX_FILE_SIZE: z.string().default('10MB'),
   ALLOWED_FILE_TYPES: z

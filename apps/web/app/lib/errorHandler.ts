@@ -1,29 +1,57 @@
-import * as Sentry from '@sentry/nextjs';
+import * as Sentry from '@sentry/react';
 import pino from 'pino';
 
-// Initialize Sentry
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.NODE_ENV,
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  debug: process.env.NODE_ENV === 'development',
-});
+// Check if we're in a browser environment
+const isBrowser = typeof globalThis !== 'undefined' && 'window' in globalThis;
 
-// Initialize Pino logger
-const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  transport:
-    process.env.NODE_ENV === 'development'
-      ? {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            translateTime: 'SYS:standard',
-            ignore: 'pid,hostname',
-          },
-        }
-      : undefined,
-});
+// Initialize Sentry with Performance monitoring (browser only)
+if (isBrowser) {
+  const sentryDsn =
+    (import.meta as any).env?.VITE_SENTRY_DSN ||
+    (import.meta as any).env?.SENTRY_DSN;
+
+  if (sentryDsn) {
+    Sentry.init({
+      dsn: sentryDsn,
+      environment: (import.meta as any).env?.MODE || 'development',
+      // Performance monitoring
+      tracesSampleRate:
+        (import.meta as any).env?.MODE === 'production' ? 0.1 : 1.0,
+      // Web Vitals monitoring (automatically enabled with default integrations)
+      debug: (import.meta as any).env?.MODE === 'development',
+      // Enable performance monitoring
+      enableTracing: true,
+      // Automatically capture Web Vitals (LCP, CLS, INP, FCP, FID, TTFB)
+      // This is enabled by default with the BrowserTracing integration
+    });
+  }
+  // Note: Sentry DSN not provided - performance monitoring disabled
+}
+
+// Initialize Pino logger (server only)
+const logger = isBrowser
+  ? // Browser logger - simple console wrapper
+    {
+      error: (...args: any[]) => console.error(...args),
+      warn: (...args: any[]) => console.warn(...args),
+      info: (...args: any[]) => console.info(...args),
+      debug: (...args: any[]) => console.debug(...args),
+    }
+  : // Node.js logger with pino
+    pino({
+      level: process.env.LOG_LEVEL || 'info',
+      transport:
+        process.env.NODE_ENV === 'development'
+          ? {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                translateTime: 'SYS:standard',
+                ignore: 'pid,hostname',
+              },
+            }
+          : undefined,
+    });
 
 // Custom error classes
 export class CustomError extends Error {
@@ -97,7 +125,7 @@ export function handleError(error: Error | CustomError): CustomError {
     appError = new InternalServerError(error.message);
   }
 
-  // Log the error with Pino
+  // Log the error
   logger.error(
     {
       message: appError.message,
@@ -108,8 +136,10 @@ export function handleError(error: Error | CustomError): CustomError {
     'Error occurred'
   );
 
-  // Send to Sentry
-  Sentry.captureException(appError);
+  // Send to Sentry (browser only)
+  if (isBrowser) {
+    Sentry.captureException(appError);
+  }
 
   return appError;
 }
@@ -125,7 +155,7 @@ export function asyncHandler<T extends any[], R>(
   };
 }
 
-// Express error handler
+// Express error handler (server only)
 export function expressErrorHandler(
   error: Error,
   req: any,
@@ -136,16 +166,17 @@ export function expressErrorHandler(
 
   // Don't leak error details in production
   const message =
-    process.env.NODE_ENV === 'production'
+    !isBrowser && process.env.NODE_ENV === 'production'
       ? 'Something went wrong'
       : appError.message;
 
   res.status(appError.statusCode).json({
     error: message,
-    ...(process.env.NODE_ENV === 'development' && {
-      stack: appError.stack,
-      details: appError.message,
-    }),
+    ...(!isBrowser &&
+      process.env.NODE_ENV === 'development' && {
+        stack: appError.stack,
+        details: appError.message,
+      }),
   });
 }
 

@@ -1,0 +1,152 @@
+# Overland Stack - Cursor AI Rules
+
+You are working with the Overland Stack, a production-ready full-stack starter with React Router v7, Payload CMS v3, and PostgreSQL.
+
+## Project Architecture
+
+### Monorepo Structure
+
+- `apps/cms/` - Payload CMS application (Next.js)
+- `apps/web/` - React Router v7 SSR application
+- `packages/ui/` - Shared UI components
+- `scripts/` - Development and build automation
+
+### Key Technologies
+
+- **Frontend**: React Router v7, TypeScript, Tailwind CSS, Vite
+- **Backend**: Payload CMS v3, PostgreSQL, Express
+- **Tools**: pnpm workspaces, ESLint, Prettier, Vitest, Playwright
+- **Deployment**: Docker, GitHub Actions
+
+## Development Guidelines
+
+### Code Generation
+
+- **ALWAYS** use the collection registry system for CMS-related code
+- Run `pnpm generate:types` after any CMS collection changes
+- Generated files are in `apps/web/app/lib/` - DO NOT edit manually
+- Use the automated type generation for API clients and TypeScript types
+
+### Type Safety
+
+- All code must be fully typed with TypeScript
+- Use generated types from `apps/web/app/lib/types/`
+- Import types from the centralized types index
+- Leverage the auto-generated API clients in `apps/web/app/lib/clients/`
+
+### File Organization
+
+- Follow the established monorepo structure
+- Use the existing naming conventions
+- Place new collections in `apps/cms/src/collections/`
+- Place new routes in `apps/web/app/routes/`
+- Place shared components in `packages/ui/src/`
+
+### CMS Development
+
+- Collections are defined in `apps/cms/src/collections/`
+- Use the existing field types and patterns
+- Follow the established collection structure (Pages, Media, Users, etc.)
+- Use the custom field types in `apps/cms/src/fields/`
+
+### Frontend Development
+
+- Use React Router v7 file-based routing
+- Follow the established route patterns
+- Use the shared UI components from `packages/ui/`
+- Implement proper SEO with the existing SEO utilities
+
+### Testing
+
+- Write unit tests with Vitest
+- Write E2E tests with Playwright
+- Follow the existing test patterns
+- Maintain test coverage above 80%
+
+### Code Quality
+
+- Use ESLint and Prettier configurations
+- Follow the established code style
+- Use the Lefthook pre-commit hooks
+- Ensure all code passes type checking
+
+## Common Patterns
+
+### Creating a New Collection
+
+1. Create collection file in `apps/cms/src/collections/`
+2. Add to `payload.config.ts`
+3. Run `pnpm generate:types`
+4. Use generated types and clients
+
+### Creating a New Route
+
+1. Create route file in `apps/web/app/routes/`
+2. Follow React Router v7 conventions
+3. Use the existing route patterns
+4. Implement proper SEO and meta tags
+
+### Adding UI Components
+
+1. Create component in `packages/ui/src/`
+2. Export from `packages/ui/src/index.ts`
+3. Use TypeScript interfaces
+4. Follow the existing component patterns
+
+### Environment Variables
+
+- Use the existing environment validation
+- Add new variables to `env.example`
+- Update validation in `apps/web/app/lib/envValidation.ts`
+- Follow the established naming conventions
+
+## Commands Reference
+
+### Development
+
+- `pnpm dev` - Start development servers
+- `pnpm build` - Build all applications
+- `pnpm test` - Run all tests
+- `pnpm generate:types` - Generate types from CMS
+
+### CMS Specific
+
+- `pnpm cms:dev` - Start CMS development server
+- `pnpm cms:build` - Build CMS application
+- `pnpm generate:types` - Generate types and clients
+
+### Web App Specific
+
+- `pnpm web:dev` - Start web app development server
+- `pnpm web:build` - Build web application
+- `pnpm test:unit` - Run unit tests
+- `pnpm test:e2e` - Run E2E tests
+
+### Code Quality
+
+- `pnpm lint` - Lint all code
+- `pnpm format` - Format code with Prettier
+- `pnpm typecheck` - Run TypeScript type checking
+
+## Important Notes
+
+- **Never edit generated files** in `apps/web/app/lib/` manually
+- **Always run type generation** after CMS changes
+- **Use the existing patterns** for consistency
+- **Follow the established architecture** for scalability
+- **Maintain type safety** throughout the codebase
+- **Use the automated tooling** for development efficiency
+
+## Security Considerations
+
+- Use the existing security middleware
+- Follow the established authentication patterns
+- Validate all inputs with the existing validation
+- Use the established error handling patterns
+
+## Performance Guidelines
+
+- Use the existing image optimization
+- Implement proper caching strategies
+- Follow the established performance monitoring
+- Use the existing lazy loading patterns

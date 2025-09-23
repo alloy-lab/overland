@@ -1,0 +1,223 @@
+---
+description: Developing CMS collections and content management
+globs: apps/cms/src/collections/**
+alwaysApply: false
+---
+
+# CMS Collection Development Guide
+
+This guide covers best practices for developing and maintaining CMS collections in the Overland Stack.
+
+## Collection Structure
+
+All collections follow a consistent pattern:
+
+```typescript
+import type { CollectionConfig } from 'payload';
+
+export const CollectionName: CollectionConfig = {
+  slug: 'collection-slug',
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'slug', 'status', 'updatedAt'],
+  },
+  access: {
+    read: () => true, // Public read access
+  },
+  fields: [
+    // Field definitions
+  ],
+  hooks: {
+    beforeChange: [
+      // Pre-save hooks
+    ],
+    afterChange: [
+      // Post-save hooks
+    ],
+  },
+};
+```
+
+## Field Types and Patterns
+
+### Common Field Patterns
+
+**Title and Slug Pattern:**
+
+```typescript
+{
+  name: 'title',
+  type: 'text',
+  required: true,
+},
+{
+  name: 'slug',
+  type: 'text',
+  required: true,
+  unique: true,
+  admin: {
+    position: 'sidebar',
+    description: 'URL-friendly version of the title',
+  },
+}
+```
+
+**Status Field Pattern:**
+
+```typescript
+{
+  name: 'status',
+  type: 'select',
+  options: [
+    { label: 'Draft', value: 'draft' },
+    { label: 'Published', value: 'published' },
+    { label: 'Archived', value: 'archived' },
+  ],
+  defaultValue: 'draft',
+  admin: {
+    position: 'sidebar',
+  },
+}
+```
+
+**SEO Group Pattern:**
+
+```typescript
+{
+  name: 'seo',
+  type: 'group',
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      admin: {
+        description: 'Custom SEO title (defaults to page title)',
+      },
+    },
+    {
+      name: 'description',
+      type: 'textarea',
+      admin: {
+        description: 'Meta description for search engines',
+      },
+    },
+    {
+      name: 'keywords',
+      type: 'text',
+      admin: {
+        description: 'Comma-separated keywords',
+      },
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Social sharing image',
+      },
+    },
+    {
+      name: 'noIndex',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'Prevent search engines from indexing this page',
+      },
+    },
+  ],
+}
+```
+
+## Hooks and Automation
+
+### Auto-generate Slug
+
+```typescript
+hooks: {
+  beforeChange: [
+    ({ data }) => {
+      if (data.title && !data.slug) {
+        data.slug = data.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+    },
+  ],
+}
+```
+
+### Content Scheduling
+
+```typescript
+hooks: {
+  beforeChange: [
+    ({ data }) => {
+      if (data.status === 'scheduled') {
+        if (data.scheduledDate && new Date(data.scheduledDate) <= new Date()) {
+          throw new Error('Scheduled date must be in the future');
+        }
+        if (data.scheduledDate) {
+          data.publishedDate = data.scheduledDate;
+        }
+      } else if (data.status === 'published') {
+        if (!data.publishedDate) {
+          data.publishedDate = new Date().toISOString();
+        }
+        data.scheduledDate = null;
+      }
+    },
+  ],
+}
+```
+
+## Custom Field Types
+
+Use the existing custom field types in `apps/cms/src/fields/`:
+
+- `ColorPicker` - Color selection field
+- `DateRange` - Date range picker
+- `ContactInfo` - Contact information group
+- `MediaGallery` - Multiple media uploads
+- `ConditionalFields` - Conditional field display
+
+## Best Practices
+
+1. **Consistent Naming**: Use kebab-case for slugs, camelCase for field names
+2. **Admin Organization**: Use `position: 'sidebar'` for metadata fields
+3. **Validation**: Add proper validation for required fields
+4. **Documentation**: Include helpful descriptions for content editors
+5. **Access Control**: Define appropriate read/write access rules
+6. **Hooks**: Use hooks for automation and data consistency
+7. **Relationships**: Use proper relationship fields for content connections
+
+## After Creating a Collection
+
+1. Add the collection to `payload.config.ts`
+2. Run `pnpm generate:types` to generate types and clients
+3. Create corresponding routes in the web app if needed
+4. Test the collection in the CMS admin interface
+5. Update documentation if necessary
+
+## Common Patterns
+
+### Blog Post Collection
+
+- Title, slug, excerpt, content
+- Featured image, author, tags
+- Published date, status
+- SEO fields
+
+### Product Collection
+
+- Name, slug, description, price
+- Images, categories, variants
+- Inventory, availability
+- SEO fields
+
+### Event Collection
+
+- Title, slug, description
+- Start/end dates, location
+- Featured image, categories
+- Registration information

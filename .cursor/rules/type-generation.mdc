@@ -1,0 +1,246 @@
+---
+description: Understanding and working with the automated type generation system
+globs: apps/web/app/lib/**
+alwaysApply: false
+---
+
+# Type Generation System
+
+The Overland Stack includes a sophisticated automated type generation system that bridges the gap between Payload CMS collections and the web application.
+
+## How It Works
+
+1. **Collection Scanning**: The system scans `apps/cms/src/collections/` for collection definitions
+2. **Type Generation**: Generates TypeScript interfaces in `apps/web/app/lib/types/`
+3. **Client Generation**: Creates API client classes in `apps/web/app/lib/clients/`
+4. **Route Generation**: Generates route files in `apps/web/app/routes/`
+
+## Generated Files Structure
+
+```
+apps/web/app/lib/
+├── types/
+│   ├── base.ts          # Base types and interfaces
+│   ├── media.ts         # Media collection types
+│   ├── pages.ts         # Pages collection types
+│   ├── site-settings.ts # Site settings types
+│   └── users.ts         # Users collection types
+├── clients/
+│   ├── base.ts          # Base client class
+│   ├── media.ts         # Media client
+│   ├── pages.ts         # Pages client
+│   ├── site-settings.ts # Site settings client
+│   └── users.ts         # Users client
+├── payloadClient.ts     # Main client aggregator
+└── types.ts            # Types index
+```
+
+## Commands
+
+### Generate All Types
+
+```bash
+pnpm generate:types
+```
+
+This command:
+
+1. Runs Payload's type generation
+2. Scans collections and generates web app types
+3. Creates API clients
+4. Generates route files
+5. Formats generated code
+
+### Generate Web Types Only
+
+```bash
+pnpm generate:web-types
+```
+
+Generates only the web app types and clients (skips Payload generation).
+
+## Generated Types
+
+### Collection Types
+
+Each collection generates a TypeScript interface:
+
+```typescript
+export interface Pages {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  content: any;
+  featuredImage?: Media;
+  status: 'draft' | 'published' | 'scheduled' | 'archived';
+  publishedDate?: string;
+  template: 'default' | 'full-width' | 'sidebar' | 'landing';
+  showInNavigation: boolean;
+  navigationOrder?: number;
+  parentPage?: Pages;
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    image?: Media;
+    noIndex: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+### Input Types
+
+For each collection, input and update types are generated:
+
+```typescript
+export type PagesInput = Omit<Pages, 'id' | 'createdAt' | 'updatedAt'>;
+export type PagesUpdate = Partial<PagesInput>;
+```
+
+## Generated API Clients
+
+### Base Client
+
+All clients extend the base client:
+
+```typescript
+export abstract class BasePayloadClient {
+  protected baseUrl: string;
+
+  protected async fetch<T>(endpoint: string, options?: RequestInit): Promise<T>;
+  protected buildQueryParams(options?: QueryOptions): URLSearchParams;
+}
+```
+
+### Collection Clients
+
+Each collection gets a dedicated client:
+
+```typescript
+export class PagesClient extends BasePayloadClient {
+  async getPages(options?: QueryOptions): Promise<PayloadResponse<Pages>>;
+  async getPage(slug: string, draft?: boolean): Promise<Pages>;
+  async getPublishedPages(
+    options?: Omit<QueryOptions, 'where'>
+  ): Promise<Pages[]>;
+  async getPagesForNavigation(): Promise<Pages[]>;
+}
+```
+
+## Usage Examples
+
+### Using Generated Types
+
+```typescript
+import type { Pages, PayloadResponse } from '~/lib/types';
+
+export async function loader() {
+  const pages: PayloadResponse<Pages> = await payloadClient.getPages({
+    limit: 10,
+    where: { status: { equals: 'published' } },
+  });
+  return { pages };
+}
+```
+
+### Using Generated Clients
+
+```typescript
+import { pagesClient } from '~/lib/clients';
+
+export async function loader({ params }: { params: { slug: string } }) {
+  try {
+    const page = await pagesClient.getPage(params.slug);
+    return { page };
+  } catch (error) {
+    throw new Response('Not Found', { status: 404 });
+  }
+}
+```
+
+### Using the Main Client
+
+```typescript
+import { payloadClient } from '~/lib/payloadClient';
+
+// Legacy compatibility - all methods available
+const pages = await payloadClient.getPages();
+const page = await payloadClient.getPage('about');
+const publishedPages = await payloadClient.getPublishedPages();
+```
+
+## Important Notes
+
+### ⚠️ DO NOT EDIT GENERATED FILES
+
+- All files in `apps/web/app/lib/` are generated
+- Manual edits will be overwritten
+- Use the collection registry system instead
+
+### 🔄 Regeneration Required
+
+Run `pnpm generate:types` after:
+
+- Adding new collections
+- Modifying collection fields
+- Changing collection structure
+- Adding new field types
+
+### 🎯 Type Safety
+
+- All generated types are fully typed
+- TypeScript will catch type mismatches
+- Use the generated types for maximum safety
+
+## Customization
+
+### Adding Custom Methods
+
+If you need custom API methods:
+
+1. Create a custom client that extends the generated client
+2. Add your custom methods
+3. Import and use your custom client
+
+```typescript
+import { PagesClient } from '~/lib/clients/pages';
+
+export class CustomPagesClient extends PagesClient {
+  async getPagesByCategory(category: string): Promise<Pages[]> {
+    return this.getPages({
+      where: { category: { equals: category } },
+    }).then(response => response.docs);
+  }
+}
+```
+
+### Custom Field Types
+
+To add support for custom field types:
+
+1. Update the type mapping in `scripts/collection-registry.js`
+2. Add the new field type to the `getTypeScriptType` method
+3. Regenerate types
+
+## Troubleshooting
+
+### Types Not Updating
+
+- Ensure you've run `pnpm generate:types`
+- Check that the collection is added to `payload.config.ts`
+- Verify the collection file follows the correct structure
+
+### Type Errors
+
+- Check that you're importing from the correct generated files
+- Ensure you're using the latest generated types
+- Verify collection field names match the generated interface
+
+### Client Method Missing
+
+- Check if the method exists in the generated client
+- Verify the collection has the required fields (e.g., slug for `getPage`)
+- Regenerate types if needed

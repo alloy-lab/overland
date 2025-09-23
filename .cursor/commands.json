@@ -1,0 +1,124 @@
+{
+  "commands": [
+    {
+      "name": "Generate Types",
+      "command": "pnpm generate:types",
+      "description": "Generate TypeScript types and API clients from CMS collections",
+      "category": "CMS"
+    },
+    {
+      "name": "Start Development",
+      "command": "pnpm dev",
+      "description": "Start both CMS and web app development servers",
+      "category": "Development"
+    },
+    {
+      "name": "Start CMS Only",
+      "command": "pnpm cms:dev",
+      "description": "Start only the CMS development server",
+      "category": "Development"
+    },
+    {
+      "name": "Start Web App Only",
+      "command": "pnpm web:dev",
+      "description": "Start only the web app development server",
+      "category": "Development"
+    },
+    {
+      "name": "Build All",
+      "command": "pnpm build",
+      "description": "Build all applications for production",
+      "category": "Build"
+    },
+    {
+      "name": "Run Tests",
+      "command": "pnpm test",
+      "description": "Run all tests (unit and E2E)",
+      "category": "Testing"
+    },
+    {
+      "name": "Run Unit Tests",
+      "command": "pnpm test:unit",
+      "description": "Run only unit tests",
+      "category": "Testing"
+    },
+    {
+      "name": "Run E2E Tests",
+      "command": "pnpm test:e2e",
+      "description": "Run only E2E tests",
+      "category": "Testing"
+    },
+    {
+      "name": "Lint Code",
+      "command": "pnpm lint",
+      "description": "Lint all code with ESLint",
+      "category": "Code Quality"
+    },
+    {
+      "name": "Format Code",
+      "command": "pnpm format",
+      "description": "Format code with Prettier",
+      "category": "Code Quality"
+    },
+    {
+      "name": "Type Check",
+      "command": "pnpm typecheck",
+      "description": "Run TypeScript type checking",
+      "category": "Code Quality"
+    },
+    {
+      "name": "Docker Dev Up",
+      "command": "docker-compose -f docker-compose.dev.yml up -d",
+      "description": "Start development environment with Docker",
+      "category": "Docker"
+    },
+    {
+      "name": "Docker Dev Down",
+      "command": "docker-compose -f docker-compose.dev.yml down",
+      "description": "Stop development environment",
+      "category": "Docker"
+    },
+    {
+      "name": "Setup Development",
+      "command": "./scripts/setup.sh",
+      "description": "Complete development environment setup",
+      "category": "Setup"
+    },
+    {
+      "name": "New Collection",
+      "command": "pnpm new:collection",
+      "description": "Create a new CMS collection",
+      "category": "CMS"
+    },
+    {
+      "name": "Generate Web Types",
+      "command": "pnpm generate:web-types",
+      "description": "Generate web app types from CMS collections",
+      "category": "CMS"
+    },
+    {
+      "name": "Clean Build",
+      "command": "pnpm clean",
+      "description": "Clean all build artifacts",
+      "category": "Build"
+    },
+    {
+      "name": "Install Hooks",
+      "command": "pnpm hooks:install",
+      "description": "Install Git hooks with Lefthook",
+      "category": "Git"
+    },
+    {
+      "name": "Uninstall Hooks",
+      "command": "pnpm hooks:uninstall",
+      "description": "Uninstall Git hooks",
+      "category": "Git"
+    },
+    {
+      "name": "Generate Environment",
+      "command": "pnpm env:generate",
+      "description": "Generate environment configuration",
+      "category": "Setup"
+    }
+  ]
+}

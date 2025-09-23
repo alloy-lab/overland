@@ -1,0 +1,104 @@
+{
+  "completions": [
+    {
+      "trigger": "payload-client",
+      "completion": "payloadClient.${1:method}(${2:params})",
+      "description": "Payload client method call"
+    },
+    {
+      "trigger": "pages-client",
+      "completion": "pagesClient.${1:method}(${2:params})",
+      "description": "Pages client method call"
+    },
+    {
+      "trigger": "media-client",
+      "completion": "mediaClient.${1:method}(${2:params})",
+      "description": "Media client method call"
+    },
+    {
+      "trigger": "site-settings-client",
+      "completion": "siteSettingsClient.${1:method}(${2:params})",
+      "description": "Site settings client method call"
+    },
+    {
+      "trigger": "loader-function",
+      "completion": "export async function loader(${1:args}) {\n  try {\n    const ${2:data} = await payloadClient.${3:method}(${4:params});\n    return { ${2:data} };\n  } catch (error) {\n    console.error('Error:', error);\n    throw new Response('Not Found', { status: 404 });\n  }\n}",
+      "description": "React Router loader function"
+    },
+    {
+      "trigger": "meta-function",
+      "completion": "export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {\n  if (!loaderData || !(loaderData as any)?.${1:item}) {\n    return [\n      { title: 'Not Found' },\n      { name: 'description', content: '${2:Item} not found' },\n    ];\n  }\n\n  const ${1:item} = (loaderData as any).${1:item};\n  return [\n    { title: `${${1:item}.title} - Overland Stack` },\n    {\n      name: 'description',\n      content: ${1:item}.excerpt || ${1:item}.seo?.description || 'Read more',\n    },\n  ];\n};",
+      "description": "React Router meta function"
+    },
+    {
+      "trigger": "collection-field",
+      "completion": "{\n  name: '${1:fieldName}',\n  type: '${2:text}',\n  ${3:required: true,}\n  admin: {\n    description: '${4:Field description}',\n    ${5:position: 'sidebar',}\n  },\n}",
+      "description": "Payload collection field"
+    },
+    {
+      "trigger": "collection-hook",
+      "completion": "hooks: {\n  beforeChange: [\n    ({ data }) => {\n      ${1:// Pre-save logic}\n    },\n  ],\n  afterChange: [\n    ({ doc, operation }) => {\n      ${2:// Post-save logic}\n    },\n  ],\n}",
+      "description": "Payload collection hooks"
+    },
+    {
+      "trigger": "test-describe",
+      "completion": "describe('${1:ComponentName}', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n  });\n\n  it('should ${2:test description}', () => {\n    ${3:// Test implementation}\n  });\n});",
+      "description": "Vitest test describe block"
+    },
+    {
+      "trigger": "e2e-test",
+      "completion": "test('should ${1:test description}', async ({ page }) => {\n  await page.goto('${2:/path}');\n  \n  await page.waitForLoadState('networkidle');\n  \n  await expect(page.locator('${3:selector}')).toBeVisible();\n});",
+      "description": "Playwright E2E test"
+    },
+    {
+      "trigger": "ui-component",
+      "completion": "import React from 'react';\n\nexport interface ${1:ComponentName}Props {\n  ${2:prop}: ${3:string};\n  className?: string;\n}\n\nexport function ${1:ComponentName}({ ${2:prop}, className = '' }: ${1:ComponentName}Props) {\n  return (\n    <div className={`${4:base-styles} ${className}`}>\n      {${2:prop}}\n    </div>\n  );\n}\n\nexport default ${1:ComponentName};",
+      "description": "UI component with TypeScript"
+    },
+    {
+      "trigger": "api-route",
+      "completion": "import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';\nimport { json } from 'react-router';\n\nexport async function loader({ request }: LoaderFunctionArgs) {\n  try {\n    const url = new URL(request.url);\n    const ${1:param} = url.searchParams.get('${1:param}');\n\n    if (!${1:param}) {\n      return json({ error: 'Missing required parameter' }, { status: 400 });\n    }\n\n    const ${2:data} = await payloadClient.${3:method}(${1:param});\n    return json({ ${2:data} });\n  } catch (error) {\n    console.error('API Error:', error);\n    return json({ error: 'Internal server error' }, { status: 500 });\n  }\n}",
+      "description": "API route with loader"
+    },
+    {
+      "trigger": "error-boundary",
+      "completion": "import React from 'react';\nimport { ErrorBoundary } from '~/lib/ErrorBoundary';\n\nexport default function ${1:ComponentName}() {\n  return (\n    <ErrorBoundary fallback={<div>Something went wrong</div>}>\n      ${2:// Component content}\n    </ErrorBoundary>\n  );\n}",
+      "description": "Component with error boundary"
+    },
+    {
+      "trigger": "seo-meta",
+      "completion": "export const meta: MetaFunction = () => {\n  return [\n    { title: '${1:Page Title} - Overland Stack' },\n    { name: 'description', content: '${2:Page description}' },\n    { property: 'og:title', content: '${1:Page Title}' },\n    { property: 'og:description', content: '${2:Page description}' },\n    { property: 'og:type', content: 'website' },\n    { name: 'twitter:card', content: 'summary_large_image' },\n  ];\n};",
+      "description": "SEO meta tags"
+    },
+    {
+      "trigger": "form-handler",
+      "completion": "export async function action({ request }: ActionFunctionArgs) {\n  try {\n    const formData = await request.formData();\n    const ${1:field} = formData.get('${1:field}') as string;\n\n    if (!${1:field}) {\n      return json({ error: 'Missing required field' }, { status: 400 });\n    }\n\n    ${2:// Process form data}\n\n    return json({ success: true });\n  } catch (error) {\n    console.error('Form Error:', error);\n    return json({ error: 'Internal server error' }, { status: 500 });\n  }\n}",
+      "description": "Form action handler"
+    },
+    {
+      "trigger": "custom-hook",
+      "completion": "import { use${1:HookName} } from '${2:react-hookz/web}';\n\nexport function use${3:CustomHook}(${4:param}: ${5:string}) {\n  const ${6:state} = use${1:HookName}(${4:param});\n\n  return {\n    ${6:state},\n    ${7:// Additional return values}\n  };\n}",
+      "description": "Custom React hook"
+    },
+    {
+      "trigger": "utility-function",
+      "completion": "/**\n * ${1:Function description}\n * @param ${2:param} - ${3:Parameter description}\n * @returns ${4:Return description}\n */\nexport function ${5:functionName}(${2:param}: ${6:type}): ${7:returnType} {\n  ${8:// Implementation}\n  return ${9:result};\n}",
+      "description": "Utility function with JSDoc"
+    },
+    {
+      "trigger": "docker-compose",
+      "completion": "version: '3.8'\n\nservices:\n  ${1:service-name}:\n    build:\n      context: .\n      dockerfile: ${2:Dockerfile}\n    ports:\n      - '${3:3000}:${3:3000}'\n    environment:\n      NODE_ENV: ${4:development}\n    volumes:\n      - .:/app\n      - /app/node_modules",
+      "description": "Docker Compose service"
+    },
+    {
+      "trigger": "package-script",
+      "completion": "\"${1:script-name}\": \"${2:command}\"",
+      "description": "Package.json script"
+    },
+    {
+      "trigger": "env-variable",
+      "completion": "${1:VARIABLE_NAME}=${2:value}",
+      "description": "Environment variable"
+    }
+  ]
+}

@@ -1,0 +1,419 @@
+---
+description: Testing patterns and best practices for the Overland Stack
+globs: tests/**/*.ts,tests/**/*.tsx,apps/*/tests/**/*
+alwaysApply: false
+---
+
+# Testing Patterns and Best Practices
+
+This guide covers testing patterns and best practices for the Overland Stack, including unit tests with Vitest and E2E tests with Playwright.
+
+## Testing Structure
+
+```
+tests/
+├── unit/                    # Unit tests
+│   └── lib/                # Utility function tests
+├── e2e/                    # End-to-end tests
+│   ├── homepage.spec.ts    # Homepage tests
+│   └── pages.spec.ts       # Pages tests
+└── utils/
+    └── test-helpers.ts     # Test utilities
+```
+
+## Unit Testing with Vitest
+
+### Test File Structure
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { ComponentName } from './ComponentName';
+
+describe('ComponentName', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should render correctly', () => {
+    render(<ComponentName prop="value" />);
+    expect(screen.getByText('value')).toBeInTheDocument();
+  });
+
+  it('should handle user interaction', async () => {
+    const user = userEvent.setup();
+    render(<ComponentName />);
+
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByText('Clicked')).toBeInTheDocument();
+  });
+});
+```
+
+### Testing API Clients
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { pagesClient } from '~/lib/clients/pages';
+
+// Mock the fetch function
+global.fetch = vi.fn();
+
+describe('PagesClient', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should fetch pages successfully', async () => {
+    const mockResponse = {
+      docs: [{ id: '1', title: 'Test Page', slug: 'test-page' }],
+      totalDocs: 1,
+    };
+
+    (fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    const result = await pagesClient.getPages();
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should handle fetch errors', async () => {
+    (fetch as any).mockRejectedValueOnce(new Error('Network error'));
+
+    await expect(pagesClient.getPages()).rejects.toThrow('Network error');
+  });
+});
+```
+
+### Testing Utility Functions
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { formatDate, slugify } from '~/lib/utils';
+
+describe('Utility Functions', () => {
+  describe('formatDate', () => {
+    it('should format date correctly', () => {
+      const date = new Date('2024-01-15');
+      expect(formatDate(date)).toBe('January 15, 2024');
+    });
+
+    it('should handle invalid dates', () => {
+      expect(formatDate(new Date('invalid'))).toBe('Invalid Date');
+    });
+  });
+
+  describe('slugify', () => {
+    it('should convert text to URL-friendly slug', () => {
+      expect(slugify('Hello World!')).toBe('hello-world');
+      expect(slugify('Test & Example')).toBe('test-example');
+    });
+  });
+});
+```
+
+## E2E Testing with Playwright
+
+### Test File Structure
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Homepage', () => {
+  test('should load and display content', async ({ page }) => {
+    await page.goto('/');
+
+    // Wait for page to load
+    await page.waitForLoadState('networkidle');
+
+    // Check page title
+    await expect(page).toHaveTitle(/Overland Stack/);
+
+    // Check main content
+    await expect(page.locator('h1')).toBeVisible();
+  });
+
+  test('should navigate to pages', async ({ page }) => {
+    await page.goto('/');
+
+    // Click on a page link
+    await page.click('a[href="/pages"]');
+
+    // Verify navigation
+    await expect(page).toHaveURL('/pages');
+    await expect(page.locator('h1')).toContainText('Pages');
+  });
+});
+```
+
+### Testing CMS Integration
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('CMS Integration', () => {
+  test('should display CMS content', async ({ page }) => {
+    await page.goto('/');
+
+    // Check that CMS content is displayed
+    await expect(page.locator('[data-testid="cms-content"]')).toBeVisible();
+
+    // Verify content structure
+    const content = page.locator('[data-testid="cms-content"]');
+    await expect(content.locator('h1')).toBeVisible();
+    await expect(content.locator('p')).toBeVisible();
+  });
+
+  test('should handle missing content gracefully', async ({ page }) => {
+    // Mock API to return empty response
+    await page.route('**/api/pages*', route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ docs: [], totalDocs: 0 }),
+      });
+    });
+
+    await page.goto('/pages');
+
+    // Should show empty state
+    await expect(page.locator('text=No pages found')).toBeVisible();
+  });
+});
+```
+
+### Testing Form Interactions
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Form Interactions', () => {
+  test('should submit contact form', async ({ page }) => {
+    await page.goto('/contact');
+
+    // Fill form fields
+    await page.fill('input[name="name"]', 'John Doe');
+    await page.fill('input[name="email"]', 'john@example.com');
+    await page.fill('textarea[name="message"]', 'Test message');
+
+    // Submit form
+    await page.click('button[type="submit"]');
+
+    // Verify success message
+    await expect(page.locator('text=Message sent successfully')).toBeVisible();
+  });
+
+  test('should validate required fields', async ({ page }) => {
+    await page.goto('/contact');
+
+    // Try to submit empty form
+    await page.click('button[type="submit"]');
+
+    // Check validation errors
+    await expect(page.locator('text=Name is required')).toBeVisible();
+    await expect(page.locator('text=Email is required')).toBeVisible();
+  });
+});
+```
+
+## Test Utilities
+
+### Mock Data
+
+```typescript
+// tests/utils/mock-data.ts
+export const mockPages = [
+  {
+    id: '1',
+    title: 'About Us',
+    slug: 'about-us',
+    excerpt: 'Learn about our company',
+    content: '<p>Our company story...</p>',
+    status: 'published',
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
+  },
+  // ... more mock data
+];
+
+export const mockMedia = [
+  {
+    id: '1',
+    url: '/uploads/test-image.jpg',
+    alt: 'Test image',
+    width: 800,
+    height: 600,
+  },
+];
+```
+
+### Test Helpers
+
+```typescript
+// tests/utils/test-helpers.ts
+import { render, RenderOptions } from '@testing-library/react';
+import { ReactElement } from 'react';
+
+export function renderWithProviders(
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>
+) {
+  return render(ui, {
+    wrapper: ({ children }) => (
+      <div data-testid="test-wrapper">
+        {children}
+      </div>
+    ),
+    ...options,
+  });
+}
+
+export function createMockRequest(url: string, method = 'GET') {
+  return new Request(url, { method });
+}
+
+export function createMockResponse(data: any, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+```
+
+## Testing Commands
+
+### Run All Tests
+
+```bash
+pnpm test
+```
+
+### Run Unit Tests Only
+
+```bash
+pnpm test:unit
+```
+
+### Run E2E Tests Only
+
+```bash
+pnpm test:e2e
+```
+
+### Run Tests with Coverage
+
+```bash
+pnpm test:coverage
+```
+
+### Run Tests in UI Mode
+
+```bash
+pnpm test:ui
+```
+
+## Best Practices
+
+### 1. Test Structure
+
+- Use descriptive test names
+- Group related tests with `describe`
+- Use `beforeEach` for setup
+- Clean up mocks after each test
+
+### 2. Assertions
+
+- Use specific assertions
+- Test both positive and negative cases
+- Verify error handling
+- Check accessibility
+
+### 3. Mocking
+
+- Mock external dependencies
+- Use realistic mock data
+- Mock at the right level
+- Avoid over-mocking
+
+### 4. E2E Testing
+
+- Test critical user journeys
+- Use data-testid for reliable selectors
+- Wait for network requests to complete
+- Test error scenarios
+
+### 5. Performance
+
+- Keep tests fast
+- Use parallel execution
+- Avoid unnecessary waits
+- Clean up resources
+
+## Common Patterns
+
+### Testing React Components
+
+```typescript
+// Test component rendering
+it('should render with props', () => {
+  render(<Component title="Test" />);
+  expect(screen.getByText('Test')).toBeInTheDocument();
+});
+
+// Test user interactions
+it('should handle click events', async () => {
+  const handleClick = vi.fn();
+  render(<Component onClick={handleClick} />);
+
+  await user.click(screen.getByRole('button'));
+  expect(handleClick).toHaveBeenCalledTimes(1);
+});
+```
+
+### Testing API Routes
+
+```typescript
+// Test successful responses
+it('should return data on success', async () => {
+  const request = createMockRequest('/api/pages');
+  const response = await loader({ request, params: {} });
+
+  expect(response.status).toBe(200);
+  const data = await response.json();
+  expect(data.pages).toBeDefined();
+});
+
+// Test error handling
+it('should handle errors gracefully', async () => {
+  vi.spyOn(payloadClient, 'getPages').mockRejectedValue(new Error('API Error'));
+
+  const request = createMockRequest('/api/pages');
+  const response = await loader({ request, params: {} });
+
+  expect(response.status).toBe(500);
+});
+```
+
+### Testing Hooks
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useCustomHook } from './useCustomHook';
+
+it('should return initial state', () => {
+  const { result } = renderHook(() => useCustomHook());
+  expect(result.current.value).toBe('initial');
+});
+
+it('should update state on action', () => {
+  const { result } = renderHook(() => useCustomHook());
+
+  act(() => {
+    result.current.setValue('new value');
+  });
+
+  expect(result.current.value).toBe('new value');
+});
+```

@@ -80,6 +80,6 @@
     }
   },
   "dependencies": {
-    "@alloylab/collection-registry": "^1.0.0"
+    "@alloylab/collection-registry": "^1.1.2"
   }
 }

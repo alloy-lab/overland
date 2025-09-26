@@ -207,7 +207,7 @@ By default, the template references the published npm package:
 ```json
 {
   "dependencies": {
-    "@alloylab/collection-registry": "^1.0.0"
+    "@alloylab/collection-registry": "^1.1.2"
   }
 }
 ```

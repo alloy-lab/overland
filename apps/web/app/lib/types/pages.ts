@@ -22,13 +22,7 @@ export interface Pages {
   showInNavigation?: boolean;
   navigationOrder?: number;
   parentPage?: any;
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string;
-    image?: Media;
-    noIndex?: boolean;
-  };
+  seo?: any;
   description?: string;
   keywords?: string;
   image?: Media;

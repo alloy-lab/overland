@@ -5,14 +5,12 @@
  * DO NOT EDIT MANUALLY - Run 'pnpm generate:types' to regenerate
  */
 
-import type { Media } from './base';
-
 export interface SiteSettings {
   id: string;
   siteName?: string;
   siteDescription?: string;
-  logo?: Media;
-  favicon?: Media;
+  logo?: any;
+  favicon?: any;
   socialMedia?: {
     twitter?: string;
     facebook?: string;
@@ -29,7 +27,7 @@ export interface SiteSettings {
     defaultTitle?: string;
     defaultDescription?: string;
     defaultKeywords?: string;
-    defaultImage?: Media;
+    defaultImage?: any;
   };
   analytics?: {
     googleAnalytics?: string;

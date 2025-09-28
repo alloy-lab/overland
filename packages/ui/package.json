@@ -19,6 +19,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@alloylab/seo": "^1.0.0",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

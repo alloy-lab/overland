@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@acme/ui": "workspace:*",
+    "@alloylab/seo": "^1.0.0",
     "@react-router/express": "catalog:",
     "@react-router/node": "catalog:",
     "compression": "catalog:",

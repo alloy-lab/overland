@@ -1,23 +1,24 @@
 import { describe, expect, it } from 'vitest';
-import { generateMetaTags, generateSEO } from '~/lib/seo';
-import type { Pages, SiteSettings } from '~/lib/types';
+import { generateMetaTags, generateSEO } from '../../../app/lib/seo';
+import type { Pages, SiteSettings } from '../../../app/lib/types';
 
 describe('SEO Utilities', () => {
   const mockSiteSettings: SiteSettings = {
-    title: 'Overland Stack',
-    description: 'A modern full-stack application',
+    id: '1',
+    siteName: 'Overland Stack',
+    siteDescription: 'A modern full-stack application',
     logo: {
+      id: '1',
       url: 'https://example.com/logo.png',
       alt: 'Overland Stack Logo',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-01-01T00:00:00.000Z',
     },
-    social: {
+    socialMedia: {
       twitter: '@alloylab',
     },
-    seo: {
-      title: 'Overland Stack - Modern Full-Stack App',
-      description: 'Build modern applications with Overland Stack',
-      keywords: 'full-stack, react, node, typescript',
-    },
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
   };
 
   const mockPage: Pages = {
@@ -25,20 +26,26 @@ describe('SEO Utilities', () => {
     title: 'About Us',
     slug: 'about',
     excerpt: 'Learn more about our company',
-    content: {},
+    content: 'This is the main content of the about page.',
     status: 'published',
     seo: {
       title: 'About Us - Overland Stack',
       description: 'Learn more about our company and mission',
       keywords: 'about, company, mission',
       image: {
+        id: '2',
         url: 'https://example.com/about-image.jpg',
         alt: 'About Us Image',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
       },
     },
     featuredImage: {
+      id: '3',
       url: 'https://example.com/featured.jpg',
       alt: 'Featured Image',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-01-01T00:00:00.000Z',
     },
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
@@ -50,7 +57,7 @@ describe('SEO Utilities', () => {
 
       expect(result).toEqual({
         title: 'Overland Stack',
-        description: 'A modern web development stack',
+        description: 'A modern full-stack application',
         keywords: undefined,
         image: undefined,
         type: 'website',

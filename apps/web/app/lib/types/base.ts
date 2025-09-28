@@ -29,6 +29,8 @@ export interface Media {
   filename?: string;
   mimeType?: string;
   filesize?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Query types

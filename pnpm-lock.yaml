@@ -208,8 +208,8 @@ importers:
   .:
     dependencies:
       '@alloylab/collection-registry':
-        specifier: ^1.0.0
-        version: 1.0.0(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))
+        specifier: ^1.1.2
+        version: 1.1.2(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -320,6 +320,9 @@ importers:
       '@acme/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@alloylab/seo':
+        specifier: ^1.0.0
+        version: 1.0.1(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))(react@19.1.0)
       '@headlessui/react':
         specifier: 'catalog:'
         version: 1.7.19(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -480,6 +483,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@alloylab/seo':
+        specifier: ^1.0.0
+        version: 1.0.1(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -508,12 +514,20 @@ packages:
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
-  '@alloylab/collection-registry@1.0.0':
-    resolution: {integrity: sha512-kFXSs6O8xX+QN9KzxxMAJN/m8dgawsRqBKx9snL1QZpfJQCj8obhDQI1rf3z6qVh+ZhPywmrFn1/uVYaSlRKlQ==}
+  '@alloylab/collection-registry@1.1.2':
+    resolution: {integrity: sha512-GrPrJWSavIt0yXIxUJMSQkVwIX1RvNz+XeP9D33NW1y2N99SWPX4BYLJS9Fsx4yaLQ/sCkW5GjqQ30IbbRxqAQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
       payload: ^3.0.0
+
+  '@alloylab/seo@1.0.1':
+    resolution: {integrity: sha512-sZyQI46Ejk0DRIKQAnS56V5N629GWBzRU0yQ8XEUvDgJHFdV32AdITT8nCgBDFNOseMwbMPimNLOTubDfds5DA==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    peerDependencies:
+      payload: '>=3.0.0'
+      react: 19.1.0
 
   '@apidevtools/json-schema-ref-parser@11.9.3':
     resolution: {integrity: sha512-60vepv88RwcJtSHrD6MjIL6Ta3SOYbgfnkHb+ppAVK+o9mXprRtulx7VlRl3lN3bbvysAfCS7WMVfhUYemB0IQ==}
@@ -3120,6 +3134,10 @@ packages:
 
   colorspace@1.1.4:
     resolution: {integrity: sha512-BgvKJiuVu1igBUF2kEjRCZXol6wiiGbY5ipL/oVPwm0BL9sIpMIzM8IK7vwuxIIzOXMV3Ey5w+vxhm0rR/TN8w==}
+
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -6043,10 +6061,15 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@alloylab/collection-registry@1.0.0(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))':
+  '@alloylab/collection-registry@1.1.2(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))':
     dependencies:
       payload: 3.56.0(graphql@16.11.0)(typescript@5.9.2)
-      prettier: 3.6.2
+
+  '@alloylab/seo@1.0.1(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))(react@19.1.0)':
+    dependencies:
+      commander: 12.1.0
+      payload: 3.56.0(graphql@16.11.0)(typescript@5.9.2)
+      react: 19.1.0
 
   '@apidevtools/json-schema-ref-parser@11.9.3':
     dependencies:
@@ -9319,6 +9342,8 @@ snapshots:
     dependencies:
       color: 3.2.1
       text-hex: 1.0.0
+
+  commander@12.1.0: {}
 
   commander@2.20.3: {}
 

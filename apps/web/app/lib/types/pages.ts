@@ -14,7 +14,7 @@ export interface Pages {
   excerpt?: string;
   content: any;
   featuredImage?: Media;
-  status?: 'draft' | 'published';
+  status: 'draft' | 'published';
   publishedDate?: string;
   scheduledDate?: string;
   expirationDate?: string;
@@ -22,7 +22,13 @@ export interface Pages {
   showInNavigation?: boolean;
   navigationOrder?: number;
   parentPage?: any;
-  seo?: any;
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    image?: Media;
+    noIndex?: boolean;
+  };
   description?: string;
   keywords?: string;
   image?: Media;

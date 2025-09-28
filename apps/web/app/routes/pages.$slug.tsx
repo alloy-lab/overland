@@ -1,29 +1,78 @@
 import type { MetaFunction } from 'react-router';
 import { payloadClient } from '~/lib/payloadClient';
-import type { Pages } from '~/lib/types';
+import { generateMetaTags, generateSEO } from '~/lib/seo';
+import type { Pages, SiteSettings } from '~/lib/types';
+
+interface LoaderData {
+  page: Pages;
+  siteSettings: SiteSettings;
+}
 
 export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
-  if (!loaderData || !(loaderData as any)?.page) {
+  if (
+    !loaderData ||
+    typeof loaderData !== 'object' ||
+    !('page' in loaderData) ||
+    !loaderData.page
+  ) {
     return [
       { title: 'Not Found' },
       { name: 'description', content: 'Pages not found' },
     ];
   }
 
-  const page = (loaderData as any).page;
-  return [
-    { title: `${page.title} - Overland Stack` },
-    {
-      name: 'description',
-      content: page.excerpt || page.seo?.description || 'Read more',
-    },
-  ];
+  const { page, siteSettings } = loaderData as LoaderData;
+
+  // Generate SEO data using the SEO package
+  const seo = generateSEO(
+    page,
+    siteSettings,
+    'page',
+    process.env.BASE_URL || 'http://localhost:3000'
+  );
+
+  // Convert SEO data to React Router meta format
+  const metaTags = generateMetaTags(seo);
+
+  // Parse the HTML meta tags and convert to React Router format
+  const metaArray = metaTags
+    .split('\n')
+    .filter(line => line.trim())
+    .map(line => {
+      const titleMatch = line.match(/<title>(.*?)<\/title>/);
+      if (titleMatch) {
+        return { title: titleMatch[1] };
+      }
+
+      const metaMatch = line.match(
+        /<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]+)"\s*\/?>/
+      );
+      if (metaMatch) {
+        const [, name, content] = metaMatch;
+        return {
+          [name.startsWith('og:') ? 'property' : 'name']: name,
+          content,
+        };
+      }
+
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
+
+  return metaArray;
 };
 
-export async function loader({ params }: { params: { slug: string } }) {
+export async function loader({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<LoaderData> {
   try {
-    const page = await payloadClient.getPage(params.slug);
-    return { page };
+    const [page, siteSettings] = await Promise.all([
+      payloadClient.getPage(params.slug),
+      payloadClient.getSiteSettings(),
+    ]);
+    return { page, siteSettings };
   } catch (error) {
     console.error(`Error loading pages:`, error);
     throw new Response('Not Found', { status: 404 });

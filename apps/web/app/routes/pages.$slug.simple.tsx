@@ -8,6 +8,7 @@ interface LoaderData {
   siteSettings: SiteSettings;
 }
 
+// Ultra-simple meta function using the SEO package helper
 // Simple helper to convert HTML meta tags to React Router format
 function htmlToReactRouterMeta(html: string) {
   return html
@@ -15,9 +16,7 @@ function htmlToReactRouterMeta(html: string) {
     .filter(line => line.trim())
     .map(line => {
       const titleMatch = line.match(/<title>(.*?)<\/title>/);
-      if (titleMatch) {
-        return { title: titleMatch[1] };
-      }
+      if (titleMatch) return { title: titleMatch[1] };
 
       const metaMatch = line.match(
         /<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]+)"\s*\/?>/
@@ -45,21 +44,13 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   ) {
     return [
       { title: 'Not Found' },
-      { name: 'description', content: 'Pages not found' },
+      { name: 'description', content: 'Page not found' },
     ];
   }
 
   const { page, siteSettings } = loaderData as LoaderData;
-
-  // Generate SEO data and convert to React Router format
-  const seo = generateSEO(
-    page,
-    siteSettings,
-    'page',
-    process.env.BASE_URL || 'http://localhost:3000'
-  );
+  const seo = generateSEO(page, siteSettings, 'page');
   const metaTags = generateMetaTags(seo);
-
   return htmlToReactRouterMeta(metaTags);
 };
 

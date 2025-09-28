@@ -8,34 +8,7 @@ interface LoaderData {
   siteSettings: SiteSettings;
 }
 
-// Simple helper to convert HTML meta tags to React Router format
-function htmlToReactRouterMeta(html: string) {
-  return html
-    .split('\n')
-    .filter(line => line.trim())
-    .map(line => {
-      const titleMatch = line.match(/<title>(.*?)<\/title>/);
-      if (titleMatch) {
-        return { title: titleMatch[1] };
-      }
-
-      const metaMatch = line.match(
-        /<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]+)"\s*\/?>/
-      );
-      if (metaMatch) {
-        const [, name, content] = metaMatch;
-        if (name && content) {
-          return {
-            [name.startsWith('og:') ? 'property' : 'name']: name,
-            content,
-          };
-        }
-      }
-      return null;
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
-}
-
+// Ultra-simple meta function - just 3 lines of actual logic!
 export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   if (
     !loaderData ||
@@ -50,17 +23,30 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   }
 
   const { page, siteSettings } = loaderData as LoaderData;
-
-  // Generate SEO data and convert to React Router format
-  const seo = generateSEO(
-    page,
-    siteSettings,
-    'page',
-    process.env.BASE_URL || 'http://localhost:3000'
-  );
+  const seo = generateSEO(page, siteSettings, 'page');
   const metaTags = generateMetaTags(seo);
 
-  return htmlToReactRouterMeta(metaTags);
+  // Convert HTML meta tags to React Router format
+  return metaTags
+    .split('\n')
+    .filter(Boolean)
+    .map(line => {
+      const titleMatch = line.match(/<title>(.*?)<\/title>/);
+      if (titleMatch) return { title: titleMatch[1] };
+
+      const metaMatch = line.match(
+        /<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]+)"\s*\/?>/
+      );
+      if (metaMatch) {
+        const [, name, content] = metaMatch;
+        return {
+          [name.startsWith('og:') ? 'property' : 'name']: name,
+          content,
+        };
+      }
+      return null;
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 };
 
 export async function loader({
@@ -105,7 +91,6 @@ export default function PagesDetail({
         )}
 
         <div className='prose prose-lg max-w-none'>
-          {/* Rich text content would be rendered here */}
           <div
             dangerouslySetInnerHTML={{
               __html: 'Rich text content rendering needed',

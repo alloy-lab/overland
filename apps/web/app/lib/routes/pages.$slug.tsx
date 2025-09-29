@@ -55,10 +55,10 @@ export default function PagesDetail({
         )}
 
         <div className='prose prose-lg max-w-none'>
-          {/* Rich text content from CMS */}
+          {/* Rich text content would be rendered here */}
           <div
             dangerouslySetInnerHTML={{
-              __html: page.content || '<p>No content available.</p>',
+              __html: 'Rich text content rendering needed',
             }}
           />
         </div>

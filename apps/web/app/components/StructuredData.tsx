@@ -21,10 +21,15 @@ export function StructuredData({
   page,
   breadcrumbs,
 }: StructuredDataProps) {
+  // Only generate structured data for published pages
+  if (!page || page.status !== 'published') {
+    return null;
+  }
+
   const structuredData = generateStructuredData({
     baseUrl,
     siteSettings,
-    page,
+    page: page as any, // Type assertion since we've verified status is 'published'
     breadcrumbs,
   });
 
@@ -45,10 +50,15 @@ export function useStructuredData(
   page?: Pages,
   breadcrumbs?: Array<{ name: string; url: string }>
 ) {
+  // Only generate structured data for published pages
+  if (!page || page.status !== 'published') {
+    return null;
+  }
+
   return generateStructuredData({
     baseUrl,
     siteSettings,
-    page,
+    page: page as any, // Type assertion since we've verified status is 'published'
     breadcrumbs,
   });
 }

@@ -49,7 +49,23 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   }
 
   const { page, siteSettings } = loaderData as LoaderData;
-  const seo = generateSEO(page, siteSettings, 'page');
+
+  // Only generate SEO for published pages
+  const seo =
+    page.status === 'published'
+      ? generateSEO(
+          page as any, // Type assertion since we've verified status is 'published'
+          siteSettings,
+          'page'
+        )
+      : {
+          title: 'Draft Page',
+          description: 'This page is not yet published',
+          keywords: undefined,
+          image: undefined,
+          url: undefined,
+          type: 'website',
+        };
   const metaTags = generateMetaTags(seo);
   return htmlToReactRouterMeta(metaTags);
 };

@@ -52,12 +52,23 @@ export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
   const { page, siteSettings } = loaderData as LoaderData;
 
   // Generate SEO data and convert to React Router format
-  const seo = generateSEO(
-    page,
-    siteSettings,
-    'page',
-    process.env.BASE_URL || 'http://localhost:3000'
-  );
+  // Only generate SEO for published pages
+  const seo =
+    page.status === 'published'
+      ? generateSEO(
+          page as any, // Type assertion since we've verified status is 'published'
+          siteSettings,
+          'page',
+          process.env.BASE_URL || 'http://localhost:3000'
+        )
+      : {
+          title: 'Draft Page',
+          description: 'This page is not yet published',
+          keywords: undefined,
+          image: undefined,
+          url: undefined,
+          type: 'website',
+        };
   const metaTags = generateMetaTags(seo);
 
   return htmlToReactRouterMeta(metaTags);

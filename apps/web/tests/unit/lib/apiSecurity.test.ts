@@ -212,7 +212,7 @@ describe('API Security Middleware', () => {
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
         error:
-          'Invalid file type. Allowed types: JPEG, PNG, GIF, WebP, PDF, TXT',
+          'Invalid file type. Allowed types: image/jpeg, image/png, image/gif, image/webp, application/pdf, text/plain',
       });
       expect(mockNext).not.toHaveBeenCalled();
     });

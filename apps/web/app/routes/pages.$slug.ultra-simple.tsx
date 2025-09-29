@@ -109,7 +109,7 @@ export default function PagesDetail({
         <div className='prose prose-lg max-w-none'>
           <div
             dangerouslySetInnerHTML={{
-              __html: 'Rich text content rendering needed',
+              __html: page.content || '<p>No content available.</p>',
             }}
           />
         </div>

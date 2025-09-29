@@ -19,12 +19,8 @@ export function DevTools({
   useEffect(() => {
     if (!enabled) return;
 
-    // Add some initial test data for demonstration
-    setMetrics([
-      { name: 'FCP', value: 1200, timestamp: Date.now() - 1000 },
-      { name: 'LCP', value: 2100, timestamp: Date.now() - 2000 },
-      { name: 'CLS', value: 0.05, timestamp: Date.now() - 3000 },
-    ]);
+    // Initialize with empty metrics - will be populated by real performance data
+    setMetrics([]);
 
     // Listen for custom performance events
     const handlePerformanceEvent = (event: CustomEvent) => {

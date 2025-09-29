@@ -94,7 +94,7 @@ overland/
 
 ```bash
 # Clone and setup
-git clone <your-repo-url>
+git clone https://github.com/alloy-lab/overland.git
 cd overland
 cp env.example .env
 

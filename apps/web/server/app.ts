@@ -2,6 +2,9 @@ import { createRequestHandler } from '@react-router/express';
 import express from 'express';
 import 'react-router';
 
+// Import security middleware
+import { apiSecurity, formatApiResponse } from '../app/lib/security';
+
 declare module 'react-router' {
   interface AppLoadContext {
     VALUE_FROM_EXPRESS: string;
@@ -9,6 +12,10 @@ declare module 'react-router' {
 }
 
 export const app = express();
+
+// Apply security middleware
+app.use(apiSecurity);
+app.use(formatApiResponse);
 
 app.use(
   createRequestHandler({

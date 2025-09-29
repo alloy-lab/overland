@@ -226,6 +226,9 @@ importers:
 
   apps/cms:
     dependencies:
+      '@alloylab/security':
+        specifier: ^1.0.0
+        version: 1.0.2(express@4.21.2)
       '@payloadcms/db-postgres':
         specifier: 'catalog:'
         version: 3.56.0(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))
@@ -320,6 +323,9 @@ importers:
       '@acme/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@alloylab/security':
+        specifier: ^1.0.0
+        version: 1.0.2(express@4.21.2)
       '@alloylab/seo':
         specifier: ^1.0.0
         version: 1.0.1(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))(react@19.1.0)
@@ -520,6 +526,12 @@ packages:
     hasBin: true
     peerDependencies:
       payload: ^3.0.0
+
+  '@alloylab/security@1.0.2':
+    resolution: {integrity: sha512-gdapBa3fwsTSu5V/2oNyqinptPFWUgILWPmT/fMA16sp7OCPmZDnyfgPCQ2hgwb6JpNc0A1Hp4R+7fzAdWjErA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      express: '>=4.0.0'
 
   '@alloylab/seo@1.0.1':
     resolution: {integrity: sha512-sZyQI46Ejk0DRIKQAnS56V5N629GWBzRU0yQ8XEUvDgJHFdV32AdITT8nCgBDFNOseMwbMPimNLOTubDfds5DA==}
@@ -3947,6 +3959,10 @@ packages:
     resolution: {integrity: sha512-ZRiwvN089JfMXokizgqEPXsl2Guk094yExfoDXR0cBYWxtBbaSww/w+vT4WEJsBW2iTUi1GgZ6swmoug3Oy4Xw==}
     engines: {node: '>=16.0.0'}
 
+  helmet@8.1.0:
+    resolution: {integrity: sha512-jOiHyAZsmnr8LqoPGmCjYAaiuWwjAPLgY8ZX2XrmHawt99/u1y6RgrZMTeoPfpUbV96HOalYgz1qzkRbw54Pmg==}
+    engines: {node: '>=18.0.0'}
+
   help-me@5.0.0:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
 
@@ -6064,6 +6080,15 @@ snapshots:
   '@alloylab/collection-registry@1.1.2(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))':
     dependencies:
       payload: 3.56.0(graphql@16.11.0)(typescript@5.9.2)
+
+  '@alloylab/security@1.0.2(express@4.21.2)':
+    dependencies:
+      cors: 2.8.5
+      express: 4.21.2
+      express-rate-limit: 7.5.1(express@4.21.2)
+      express-validator: 7.2.1
+      helmet: 8.1.0
+      zod: 3.25.76
 
   '@alloylab/seo@1.0.1(payload@3.56.0(graphql@16.11.0)(typescript@5.9.2))(react@19.1.0)':
     dependencies:
@@ -10269,6 +10294,8 @@ snapshots:
       function-bind: 1.1.2
 
   helmet@7.2.0: {}
+
+  helmet@8.1.0: {}
 
   help-me@5.0.0: {}
 

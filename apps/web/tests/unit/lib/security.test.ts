@@ -8,6 +8,8 @@ vi.mock('~/lib/envValidation', () => ({
     ENABLE_CORS: true,
     ENABLE_RATE_LIMITING: true,
     ENABLE_CSRF: true,
+    ALLOWED_ORIGIN_1: 'http://localhost:3000',
+    ALLOWED_ORIGIN_2: 'http://localhost:3001',
   },
 }));
 

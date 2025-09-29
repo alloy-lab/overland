@@ -1,6 +1,6 @@
 # Security Configuration
 
-This document outlines the security measures implemented in the Overland Stack application.
+This document outlines the security measures implemented in the Overland Stack application using the `@alloylab/security` package.
 
 ## Environment Variables
 
@@ -42,6 +42,8 @@ ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif,image/webp,application/pdf,tex
 
 ## Security Features
 
+The Overland Stack uses the `@alloylab/security` package to provide comprehensive security middleware. All security features are centralized and consistently applied across applications.
+
 ### 1. Rate Limiting
 
 - **General API**: 100 requests per 15 minutes per IP
@@ -50,7 +52,7 @@ ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif,image/webp,application/pdf,tex
 
 ### 2. CORS Protection
 
-- Configurable allowed origins
+- Configurable allowed origins from environment variables
 - Credentials support
 - Specific headers and methods allowed
 
@@ -77,22 +79,21 @@ ALLOWED_FILE_TYPES=image/jpeg,image/png,image/gif,image/webp,application/pdf,tex
 ### 6. File Upload Security
 
 - File type validation
-- File size limits (10MB default)
+- File size limits (configurable, 10MB default)
 - Malicious extension blocking
-- MIME type verification
 
 ### 7. API Security
 
-- API key authentication
+- API key validation
 - Admin token authentication
 - Request/response logging
-- IP whitelisting for admin routes
+- Standardized API response formatting
 
-### 8. Error Handling
+### 8. Environment Validation
 
-- Structured error responses
-- No sensitive information leakage
-- Comprehensive logging
+- Zod-based schema validation for all environment variables
+- Startup validation with detailed error messages
+- Type-safe environment configuration
 
 ## Security Best Practices
 

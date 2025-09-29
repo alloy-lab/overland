@@ -42,6 +42,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     services:
       postgres:
@@ -74,6 +75,21 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Wait for database
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+
+      - name: Generate types
+        run: pnpm generate:types
+        env:
+          DATABASE_URI: postgresql://postgres:postgres@localhost:5432/overland_test
+          PAYLOAD_SECRET: test-secret-key-for-ci
+          PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3001
+          PAYLOAD_PUBLIC_CMS_URL: http://localhost:3001/admin
 
       - name: Type check
         run: pnpm typecheck
@@ -99,11 +115,13 @@ jobs:
           PAYLOAD_SECRET: test-secret-key-for-ci
           PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3001
           PAYLOAD_PUBLIC_CMS_URL: http://localhost:3001/admin
+          NODE_ENV: test
 
   e2e:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: test
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -137,6 +155,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Wait for database
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+
+      - name: Generate types
+        run: pnpm generate:types
+        env:
+          DATABASE_URI: postgresql://postgres:postgres@localhost:5432/overland_test
+          PAYLOAD_SECRET: test-secret-key-for-ci
+          PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3001
+          PAYLOAD_PUBLIC_CMS_URL: http://localhost:3001/admin
+
       - name: Install Playwright Browsers
         run: |
           pnpm --filter cms exec playwright install --with-deps
@@ -157,6 +190,7 @@ jobs:
           PAYLOAD_SECRET: test-secret-key-for-ci
           PAYLOAD_PUBLIC_SERVER_URL: http://localhost:3001
           PAYLOAD_PUBLIC_CMS_URL: http://localhost:3001/admin
+          NODE_ENV: test
 
       - name: Collect Playwright Reports
         if: always()

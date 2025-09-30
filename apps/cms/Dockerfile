@@ -55,4 +55,12 @@ RUN mkdir -p /app/apps/cms/uploads
 EXPOSE 3001
 ENV NODE_ENV=production
 ENV PORT=3001
-CMD ["pnpm", "--filter=cms", "start"]
+
+# Create a startup script that runs migrations then starts the app
+RUN echo '#!/bin/sh\n\
+echo "Running database migrations..."\n\
+pnpm --filter=cms payload migrate\n\
+echo "Starting CMS application..."\n\
+pnpm --filter=cms start' > /app/start.sh && chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]

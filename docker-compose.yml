@@ -64,6 +64,7 @@ services:
     environment:
       NODE_ENV: production
       WEB_PORT: 3000
+      DATABASE_URI: postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/overland
       PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
       # Security settings
       ENABLE_CSRF: ${ENABLE_CSRF:-true}

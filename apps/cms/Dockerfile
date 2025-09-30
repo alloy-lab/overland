@@ -45,6 +45,8 @@ RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 # Copy built application from base stage
 COPY --from=base /app/apps/cms/.next ./apps/cms/.next
 COPY --from=base /app/apps/cms/package.json ./apps/cms/
+COPY --from=base /app/apps/cms/tsconfig.json ./apps/cms/
+COPY --from=base /app/apps/cms/src ./apps/cms/src
 
 # Create public directory (Next.js requires this even if empty)
 RUN mkdir -p ./apps/cms/public

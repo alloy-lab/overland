@@ -4,9 +4,6 @@ services:
     image: postgres:17-alpine
     container_name: overland-postgres
     restart: unless-stopped
-    profiles:
-      - production
-      - database
     environment:
       POSTGRES_DB: overland
       POSTGRES_USER: postgres
@@ -30,9 +27,6 @@ services:
       dockerfile: apps/cms/Dockerfile
     container_name: overland-cms
     restart: unless-stopped
-    profiles:
-      - production
-      - cms
     environment:
       NODE_ENV: production
       DATABASE_URI: postgresql://postgres:${POSTGRES_PASSWORD:-password}@postgres:5432/overland
@@ -67,9 +61,6 @@ services:
       dockerfile: apps/web/Dockerfile
     container_name: overland-web
     restart: unless-stopped
-    profiles:
-      - production
-      - web
     environment:
       NODE_ENV: production
       WEB_PORT: 3000

@@ -1,6 +1,6 @@
 FROM node:24.8.0-alpine AS base
 
-RUN npm install -g pnpm
+RUN corepack enable pnpm
 WORKDIR /app
 
 # Copy workspace configuration
@@ -27,7 +27,7 @@ RUN pnpm --filter cms build
 # Production stage
 FROM node:24.8.0-alpine AS production
 
-RUN npm install -g pnpm
+RUN corepack enable pnpm
 WORKDIR /app
 
 # Copy workspace configuration
@@ -43,8 +43,10 @@ RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # Copy built application from base stage
 COPY --from=base /app/apps/cms/.next ./apps/cms/.next
-COPY --from=base /app/apps/cms/public ./apps/cms/public
 COPY --from=base /app/apps/cms/package.json ./apps/cms/
+
+# Create public directory (Next.js requires this even if empty)
+RUN mkdir -p ./apps/cms/public
 
 # Create uploads directory for file storage
 RUN mkdir -p /app/apps/cms/uploads

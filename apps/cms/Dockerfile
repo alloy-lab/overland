@@ -54,4 +54,4 @@ RUN mkdir -p /app/apps/cms/uploads
 EXPOSE 3001
 ENV NODE_ENV=production
 ENV PORT=3001
-CMD ["pnpm", "start", "--filter=cms"]
+CMD ["pnpm", "--filter=cms", "start"]

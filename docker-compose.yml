@@ -48,10 +48,10 @@ services:
     volumes:
       - cms_uploads:/app/apps/cms/uploads
     healthcheck:
-      test: ['CMD-SHELL', 'curl -f http://localhost:3001/admin || exit 1']
+      test: ['CMD-SHELL', 'nc -z localhost 3001 || exit 1']
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 60s
 
   # Web Application

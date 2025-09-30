@@ -28,6 +28,7 @@ RUN pnpm --filter cms build
 FROM node:24.8.0-alpine AS production
 
 RUN corepack enable pnpm
+RUN apk add --no-cache curl
 WORKDIR /app
 
 # Copy workspace configuration

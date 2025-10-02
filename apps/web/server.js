@@ -1,8 +1,21 @@
-import compression from 'compression';
 import express from 'express';
-import morgan from 'morgan';
-import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+// Load environment variables from root .env file in development only
+if (process.env.NODE_ENV === 'development') {
+  const { config } = await import('dotenv');
+  const { resolve } = await import('path');
+
+  // Try to load .env from root directory (when running from apps/web)
+  const rootEnvPath = resolve(process.cwd(), '../../.env');
+  const result = config({ path: rootEnvPath });
+
+  // If root .env not found, try current directory as fallback
+  if (!result.parsed) {
+    config({ path: resolve(process.cwd(), '.env') });
+  }
+}
 
 // Short-circuit the type-checking of the built output.
 const BUILD_PATH = './build/server/index.js';

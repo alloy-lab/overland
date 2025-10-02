@@ -41,7 +41,10 @@
     "config": "node scripts/dev-cli.js config",
     "status": "node scripts/dev-cli.js status",
     "env:generate": "node scripts/dev-cli.js env",
-    "docker:dev": "node scripts/dev-cli.js docker"
+    "docker:dev": "node scripts/dev-cli.js docker",
+    "db:sync": "node scripts/sync-database.js sync",
+    "db:backup": "node scripts/sync-database.js backup",
+    "db:validate": "node scripts/sync-database.js validate"
   },
   "devDependencies": {
     "@types/node": "catalog:",

@@ -170,6 +170,24 @@ docker compose -f docker-compose.dev.yml --profile development up -d
 docker compose up -d
 ```
 
+### Database Sync to Coolify
+
+Sync your local database changes to your Coolify-hosted environment:
+
+```bash
+# Setup (one-time)
+cp env.coolify.example .env.coolify
+# Edit .env.coolify with your Coolify details
+
+# Sync database
+pnpm db:sync
+
+# Or create backup only
+pnpm db:backup
+```
+
+See [DATABASE_SYNC.md](./DATABASE_SYNC.md) for detailed instructions.
+
 ### Environment Variables
 
 ```env
@@ -253,6 +271,8 @@ Create route files in `apps/web/app/routes/` (React Router v7 file-based routing
 - `pnpm test` - Run tests
 - `pnpm generate:types` - Generate types from CMS
 - `pnpm format` - Format code
+- `pnpm db:sync` - Sync local database to Coolify
+- `pnpm db:backup` - Create local database backup
 
 ## Customization
 

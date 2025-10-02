@@ -3,7 +3,11 @@ import express from 'express';
 import 'react-router';
 
 // Import security middleware
-import { apiSecurity, formatApiResponse } from '../app/lib/security';
+import {
+  apiSecurity,
+  formatApiResponse,
+  staticSecurity,
+} from '../app/lib/security';
 
 declare module 'react-router' {
   interface AppLoadContext {
@@ -14,6 +18,7 @@ declare module 'react-router' {
 export const app = express();
 
 // Apply security middleware
+app.use(staticSecurity);
 app.use(apiSecurity);
 app.use(formatApiResponse);
 

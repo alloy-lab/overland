@@ -31,14 +31,29 @@ const allowedOrigins = [env.ALLOWED_ORIGIN_1, env.ALLOWED_ORIGIN_2].filter(
 );
 
 // Security middleware configurations
-export const apiSecurity = createApiSecurity(allowedOrigins, logger);
+// For development, create a no-op middleware to disable CSP
+export const apiSecurity =
+  process.env.NODE_ENV === 'development'
+    ? (req: any, res: any, next: any) => {
+        // Skip API security in development to avoid CSP issues
+        next();
+      }
+    : createApiSecurity(allowedOrigins, logger);
 export const authSecurity = createAuthSecurity(allowedOrigins, logger);
 export const formSecurity = createFormSecurity(allowedOrigins, logger);
 export const passwordResetSecurity = createPasswordResetSecurity(
   allowedOrigins,
   logger
 );
-export const staticSecurity = createStaticSecurity();
+// For development, we'll disable CSP entirely to allow inline scripts
+// In production, use the default secure CSP
+export const staticSecurity =
+  process.env.NODE_ENV === 'development'
+    ? (req: any, res: any, next: any) => {
+        // Skip CSP in development
+        next();
+      }
+    : createStaticSecurity();
 
 // API security middleware
 export const validateApiKey = createValidateApiKey(logger);

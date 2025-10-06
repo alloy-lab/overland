@@ -50,7 +50,7 @@ catalog:
   morgan: ^1.10.0
   next: 15.5.3
   payload: 3.56.0
-  pino: ^8.0.0
+  pino: ^10.0.0
   pino-pretty: ^10.0.0
   playwright: 1.55.0
   playwright-core: 1.55.0

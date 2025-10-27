@@ -154,8 +154,8 @@ catalogs:
       specifier: ^10.0.0
       version: 10.3.1
     playwright:
-      specifier: 1.55.0
-      version: 1.55.0
+      specifier: 1.56.1
+      version: 1.56.1
     playwright-core:
       specifier: 1.55.0
       version: 1.55.0
@@ -301,7 +301,7 @@ importers:
         version: 26.1.0
       playwright:
         specifier: 'catalog:'
-        version: 1.55.0
+        version: 1.56.1
       playwright-core:
         specifier: 'catalog:'
         version: 1.55.0
@@ -467,7 +467,7 @@ importers:
         version: 26.1.0
       playwright:
         specifier: 'catalog:'
-        version: 1.55.0
+        version: 1.56.1
       prettier:
         specifier: 'catalog:'
         version: 3.6.2
@@ -4988,8 +4988,18 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.56.1:
+    resolution: {integrity: sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.55.0:
     resolution: {integrity: sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.56.1:
+    resolution: {integrity: sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11478,9 +11488,17 @@ snapshots:
 
   playwright-core@1.55.0: {}
 
+  playwright-core@1.56.1: {}
+
   playwright@1.55.0:
     dependencies:
       playwright-core: 1.55.0
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.56.1:
+    dependencies:
+      playwright-core: 1.56.1
     optionalDependencies:
       fsevents: 2.3.2
 
